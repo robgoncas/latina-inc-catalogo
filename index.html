@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="./assets/css/index.css">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafafa; }
         /* Bandera de Chile como fondo sutil (inspiración) */
@@ -85,7 +86,7 @@
             <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-chile-red">location_on</span> Montreal, QC</span>
         </div>
         <div class="flex gap-6 items-center">
-            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-chile-blue">mail</span> ventas@latinainc.ca</span>
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-chile-blue">mail</span> latina.ramirez@videotron.ca</span>
             <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-chile-red">call</span> +1 (514) 555-0123</span>
         </div>
     </div>
@@ -136,7 +137,7 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 md:px-10 py-8 pb-32 bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl border-2 border-blue-200 my-6 relative overflow-hidden">
+    <main class="fix-width max-w-7xl mx-auto px-4 md:px-10 py-8 pb-32 bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl border-2 border-blue-200 my-6 relative overflow-hidden">
         <!-- pequeña estrella solitaria (decoración) -->
         <div class="absolute -top-3 -right-3 w-20 h-20 opacity-5 bg-chile-blue rotate-12" style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);"></div>
         
@@ -154,15 +155,15 @@
         </div>
 
         <!-- Filter Bar – con colores azul, rojo, blanco (el activo azul) -->
-        <div class="flex items-center gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-            <button onclick="filterProducts('all')" class="filter-btn px-5 py-2 bg-chile-blue text-white border-chile-blue shadow-sm" data-filter="all">Todos</button>
-            <button onclick="filterProducts('Mermeladas')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Mermeladas">Mermeladas</button>
-            <button onclick="filterProducts('Galletas')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Galletas">Galletas</button>
-            <button onclick="filterProducts('Chocolates')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Chocolates">Chocolates</button>
-            <button onclick="filterProducts('Salsas')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Salsas">Salsas</button>
-            <button onclick="filterProducts('Despensa')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Despensa">Despensa</button>
-            <button onclick="filterProducts('Bebidas')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Bebidas">Bebidas</button>
-        </div>
+        <div class="flex flex-wrap items-center gap-2 mb-8 pb-2">
+    <button onclick="filterProducts('all')" class="filter-btn px-4 md:px-5 py-2 bg-chile-blue text-white border-chile-blue shadow-sm rounded-lg text-sm font-bold whitespace-nowrap" data-filter="all">Todos</button>
+    <button onclick="filterProducts('Mermeladas')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Mermeladas">Mermeladas</button>
+    <button onclick="filterProducts('Galletas')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Galletas">Galletas</button>
+    <button onclick="filterProducts('Chocolates')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Chocolates">Chocolates</button>
+    <button onclick="filterProducts('Salsas')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Salsas">Salsas</button>
+    <button onclick="filterProducts('Despensa')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Despensa">Despensa</button>
+    <button onclick="filterProducts('Bebidas')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Bebidas">Bebidas</button>
+</div>
 
         <!-- Product Grid -->
         <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
