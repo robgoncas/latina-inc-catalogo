@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Latina INC · Productos Chilenos · Montreal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafafa; }
+        /* Bandera de Chile como fondo sutil (inspiración) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(170deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.92) 40%,
+                        rgba(0,57,166,0.03) 40%, rgba(0,57,166,0.06) 60%,
+                        rgba(213,43,30,0.03) 60%, rgba(213,43,30,0.06) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .product-card { transition: all 0.25s ease; border: 1px solid rgba(0,57,166,0.15); background: white; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 16px 28px -8px rgba(0,57,166,0.15), 0 6px 12px -4px rgba(213,43,30,0.1); border-color: #0039a6; }
+        /* filtros activos con esquema bandera */
+        .filter-btn {
+            transition: all 0.2s;
+            border-width: 1px;
+            font-weight: 600;
+        }
+        .filter-active {
+            background-color: #0039a6 !important;      /* azul */
+            color: white !important;
+            border-color: #0039a6 !important;
+            box-shadow: 0 4px 10px -2px rgba(0,57,166,0.3);
+        }
+        /* botón caja ahora rojo/azul sin bordes naranjas */
+        .btn-caja {
+            background-color: #0039a6; /* azul chileno */
+            color: white;
+            border: 2px solid #d52b1e; /* rojo */
+            transition: all 0.2s;
+        }
+        .btn-caja:hover {
+            background-color: #d52b1e;
+            border-color: #0039a6;
+            box-shadow: 0 6px 14px rgba(213,43,30,0.25);
+        }
+        /* botón unidad con bordes chilenos tenues */
+        .btn-unidad {
+            background-color: white;
+            color: #0039a6;
+            border: 1.5px solid #d52b1e;
+        }
+        .btn-unidad:hover {
+            background-color: #d52b1e;
+            color: white;
+            border-color: #0039a6;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .cart-item { animation: slideIn 0.3s ease; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        /* footer y header con acentos bandera */
+        .chile-stripe {
+            border-top: 6px solid #0039a6;
+            border-bottom: 6px solid #d52b1e;
+        }
+        .bg-chile-blue { background-color: #0039a6; }
+        .bg-chile-red { background-color: #d52b1e; }
+        .text-chile-blue { color: #0039a6; }
+        .text-chile-red { color: #d52b1e; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col chile-stripe bg-white/90">
+
+    <!-- Top Utility Bar — colores neutros con iconos rojos/azules -->
+    <div class="bg-white border-b border-blue-200 px-4 md:px-10 py-2 flex flex-wrap justify-between items-center text-xs font-medium text-[#2d2d2d]">
+        <div class="flex gap-6 items-center">
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-chile-blue">person</span> Myriam Ramirez</span>
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-chile-red">location_on</span> Montreal, QC</span>
+        </div>
+        <div class="flex gap-6 items-center">
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-chile-blue">mail</span> ventas@latinainc.ca</span>
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm text-chile-red">call</span> +1 (514) 555-0123</span>
+        </div>
+    </div>
+
+    <!-- Header con logo mejorado y sin naranja -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-md border-b border-blue-200 px-4 md:px-10 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-8">
+            <!-- Logo Area: versión más chilena -->
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-br from-[#0039a6] to-[#d52b1e] p-2.5 rounded-xl text-white shadow-md flex items-center justify-center">
+                    <svg class="size-7" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M42.1739 20.1739L27.8261 5.82609C29.1366 7.13663 28.3989 10.1876 26.2002 13.7654C24.8538 15.9564 22.9595 18.3449 20.6522 20.6522C18.3449 22.9595 15.9564 24.8538 13.7654 26.2002C10.1876 28.3989 7.13663 29.1366 5.82609 27.8261L20.1739 42.1739C21.4845 43.4845 24.5355 42.7467 28.1133 40.548C30.3042 39.2016 32.6927 37.3073 35 35C37.3073 32.6927 39.2016 30.3042 40.548 28.1133C42.7467 24.5355 43.4845 21.4845 42.1739 20.1739Z" fill="currentColor"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight text-[#181311]">LATINA INC</h1>
+                    <p class="text-[10px] uppercase tracking-widest text-chile-blue font-bold">DISTRIBUCIÓN MONTREAL</p>
+                </div>
+            </div>
+
+            <!-- Search Bar (mantiene estilo) -->
+            <div class="flex-1 max-w-md hidden md:block">
+                <div class="relative group">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-chile-blue group-focus-within:text-chile-red transition-colors">search</span>
+                    <input id="searchInput" class="w-full bg-gray-50 border border-blue-200 focus:border-chile-red focus:ring-2 focus:ring-chile-blue/20 rounded-lg pl-10 pr-4 py-2 text-sm placeholder:text-[#6b4f43]" placeholder="Buscar productos chilenos..." type="text"/>
+                </div>
+            </div>
+
+            <!-- Actions con contador rojo/azul -->
+            <div class="flex items-center gap-4">
+                <button onclick="toggleCart()" class="relative p-2 text-[#181311] hover:text-chile-blue transition-colors">
+                    <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-chile-red text-white text-[10px] font-bold rounded-full size-5 flex items-center justify-center border-2 border-white">0</span>
+                </button>
+                <div class="h-8 w-px bg-blue-200"></div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold text-[#181311]">Myriam R.</p>
+                        <p class="text-[10px] text-chile-blue font-semibold">Administrador</p>
+                    </div>
+                    <div class="size-9 rounded-full bg-gradient-to-br from-[#0039a6] to-[#d52b1e] p-0.5 flex items-center justify-center overflow-hidden">
+                        <div class="size-full rounded-full bg-white flex items-center justify-center">
+                            <img alt="Profile" class="size-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name=Myriam+Ramirez&background=d52b1e&color=fff&size=64"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-10 py-8 pb-32 bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl border-2 border-blue-200 my-6 relative overflow-hidden">
+        <!-- pequeña estrella solitaria (decoración) -->
+        <div class="absolute -top-3 -right-3 w-20 h-20 opacity-5 bg-chile-blue rotate-12" style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);"></div>
+        
+        <!-- Hero Section con acentos chilenos -->
+        <div class="mb-10 flex flex-col md:flex-row justify-between items-end gap-6 border-b border-blue-200 pb-8">
+            <div class="max-w-2xl">
+                <span class="inline-block bg-chile-blue text-white px-3 py-1 rounded-full text-xs font-bold mb-4 shadow-sm">🇨🇱 CATÁLOGO 2024 · HECHO EN CHILE</span>
+                <h2 class="text-4xl md:text-5xl font-black text-[#181311] leading-tight mb-4">Sabor de <span class="text-chile-blue underline decoration-chile-red/30">Chile</span> en Montreal</h2>
+                <p class="text-[#4a3b35] text-lg max-w-xl">Productos premium importados desde el corazón de Chile. Directo para tu mesa o negocio.</p>
+            </div>
+            <button onclick="generarPDF()" class="flex items-center gap-2 bg-chile-blue text-white px-6 py-3 rounded-lg font-bold text-sm hover:bg-chile-red transition-colors shadow-lg border border-white/20">
+                <span class="material-symbols-outlined text-lg">download</span>
+                Descargar Catálogo PDF
+            </button>
+        </div>
+
+        <!-- Filter Bar – con colores azul, rojo, blanco (el activo azul) -->
+        <div class="flex items-center gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
+            <button onclick="filterProducts('all')" class="filter-btn px-5 py-2 bg-chile-blue text-white border-chile-blue shadow-sm" data-filter="all">Todos</button>
+            <button onclick="filterProducts('Mermeladas')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Mermeladas">Mermeladas</button>
+            <button onclick="filterProducts('Galletas')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Galletas">Galletas</button>
+            <button onclick="filterProducts('Chocolates')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Chocolates">Chocolates</button>
+            <button onclick="filterProducts('Salsas')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Salsas">Salsas</button>
+            <button onclick="filterProducts('Despensa')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Despensa">Despensa</button>
+            <button onclick="filterProducts('Bebidas')" class="filter-btn px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50" data-filter="Bebidas">Bebidas</button>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    </main>
+
+    <!-- Persistent Cotización Footer con colores chilenos -->
+    <div class="fixed bottom-0 inset-x-0 bg-white border-t-2 border-chile-blue shadow-[0_-6px_20px_rgba(0,57,166,0.15)] px-4 md:px-10 py-4 z-40">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-6">
+                <div class="hidden sm:flex items-center gap-4 border-r border-chile-blue/20 pr-6">
+                    <div class="size-12 bg-gradient-to-br from-chile-blue to-chile-red rounded-full flex items-center justify-center text-white shadow-md">
+                        <span class="material-symbols-outlined text-3xl">list_alt</span>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-extrabold text-[#181311]">Resumen de Cotización</h4>
+                        <p class="text-xs text-chile-blue font-semibold"><span id="cart-item-count">0</span> productos seleccionados</p>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-[10px] uppercase font-bold text-chile-red tracking-wider">Total Estimado</span>
+                    <span id="cart-total" class="text-3xl font-black text-chile-blue">$0.00 <span class="text-sm font-medium text-chile-red ml-1">CAD</span></span>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <button onclick="clearCart()" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-white border-2 border-chile-red text-chile-red rounded-lg font-bold text-sm hover:bg-chile-red hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">delete</span> LIMPIAR
+                </button>
+                <button onclick="generarPDF()" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-10 py-3 bg-chile-blue text-white rounded-lg font-extrabold text-sm hover:bg-chile-red transition-all shadow-lg border-2 border-white">
+                    <span class="material-symbols-outlined">picture_as_pdf</span>
+                    DESCARGAR PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar con estilo chileno -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out border-l-4 border-chile-blue">
+        <div class="flex flex-col h-full">
+            <div class="flex justify-between items-center p-6 border-b border-chile-blue/20">
+                <h3 class="text-xl font-bold flex gap-2"><span class="text-chile-blue">Carrito</span><span class="text-chile-red">🇨🇱</span></h3>
+                <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 rounded-lg">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+            <div class="p-6 border-t border-chile-blue/20">
+                <div class="flex justify-between mb-4">
+                    <span class="font-bold text-chile-blue">Total:</span>
+                    <span id="sidebar-total" class="font-bold text-chile-red">$0.00</span>
+                </div>
+                <button onclick="checkout()" class="w-full bg-chile-blue text-white py-3 rounded-lg font-bold hover:bg-chile-red transition-colors border-2 border-white">
+                    Proceder al Pago
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Decoración extra bandera -->
+    <div class="fixed -z-10 bottom-10 left-5 w-40 h-40 opacity-10 bg-chile-blue" style="clip-path: polygon(0% 0%, 100% 0%, 50% 100%);"></div>
+    <div class="fixed -z-10 top-20 right-5 w-32 h-32 opacity-10 bg-chile-red rounded-full blur-xl"></div>
+
+    <script>
+        // Base de datos de productos (misma)
+        const productos = [
+            { id: 1, nombre: "Mermelada de Mora", descripcion: "Mermelada artesanal, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_mora.png" },
+            { id: 2, nombre: "Mermelada de Alcayota", descripcion: "Tradicional alcayota, 24 unidades por caja", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Mermeladas", etiqueta: "TRADICIÓN", imagen: "./assets/img/mermelada_alcayota.png" },
+            { id: 3, nombre: "Mermelada de Damasco", descripcion: "Damasco seleccionado, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_damasco.png" },
+            { id: 4, nombre: "Mermelada de Durazno", descripcion: "Durazno fresco, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_durazno.png" },
+            { id: 5, nombre: "Mermelada de Mango", descripcion: "Mango tropical, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "EXÓTICO", imagen: "./assets/img/mermelada_mango.png" },
+            { id: 6, nombre: "Mermelada de Berries", descripcion: "Mix de frutos rojos, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "PREMIUM", imagen:"./assets/img/mermelada_berries.png" },
+            { id: 7, nombre: "Dulce de Membrillo", descripcion: "Clásico dulce de membrillo, 12 unidades", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "./assets/img/dulce_membrillo.png" },
+            { id: 8, nombre: "Galletas Triton", descripcion: "Galletas sabor chocolate, 30 unidades por caja", precioUnidad: 4.00, precioCaja: 120.00, categoria: "Galletas", etiqueta: "POPULAR", imagen: "./assets/img/galleta_triton.png" },
+            { id: 9, nombre: "Galletas Soda Regular", descripcion: "Galletas de soda clásicas, 24 unidades", precioUnidad: 4.00, precioCaja: 96.00, categoria: "Galletas", etiqueta: "CLÁSICO", imagen: "./assets/img/galletas_soda.png" },
+            { id: 10, nombre: "Galletas Negrita", descripcion: "Galletas con chispas de chocolate, 20 unidades", precioUnidad: 1.75, precioCaja: 35.00, categoria: "Galletas", etiqueta: "ECONÓMICO", imagen: "./assets/img/galletas_negrita.png" },
+            { id: 11, nombre: "Galletas de Coco", descripcion: "Galletas sabor coco, 30 unidades por caja", precioUnidad: 3.50, precioCaja: 105.00, categoria: "Galletas", etiqueta: "ESPECIAL", imagen: "./assets/img/galletas_coco.png" },
+            { id: 12, nombre: "Galletas de Limón", descripcion: "Galletas sabor limón, 30 unidades por caja", precioUnidad: 3.50, precioCaja: 105.00, categoria: "Galletas", etiqueta: "ESPECIAL", imagen:"./assets/img/galletas_limón.png" },
+            { id: 13, nombre: "Chocolate Super 8", descripcion: "Pack x 24 unidades, ideal para compartir", precioUnidad: 1.50, precioCaja: 36.00, categoria:"Chocolates", etiqueta:"INFANTIL", imagen:"./assets/img/galletas_super8.png" },
+            { id: 14, nombre: "Chocolate Sahne Nuss", descripcion: "Chocolate con nueces 160gr, 21 unidades", precioUnidad: 10.00, precioCaja: 210.00, categoria: "Chocolates", etiqueta: "PREMIUM", imagen: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=400&fit=crop" },
+            { id: 15, nombre: "Ají Salsa Don Juan", descripcion: "Salsa de ají picante 240gr, 24 unidades", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Salsas", etiqueta: "PICANTE", imagen: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" },
+            { id: 16, nombre: "Ají Pebre Don Juan", descripcion: "Pebre tradicional 240gr, 24 unidades", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Salsas", etiqueta: "TÍPICO", imagen: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" },
+            { id: 17, nombre: "Mostaza Don Juan", descripcion: "Mostaza artesanal 240gr, 24 unidades", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Salsas", etiqueta: "CLÁSICO", imagen: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" },
+            { id: 18, nombre: "Trigo Mote Oso", descripcion: "Trigo mote 500gr, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+            { id: 19, nombre: "Harina Tostada Oso", descripcion: "Harina tostada 500gr, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+            { id: 20, nombre: "Chancaca Deliciosa", descripcion: "Chancaca 250gr, 12 unidades por caja", precioUnidad: 6.50, precioCaja: 78.00, categoria: "Despensa", etiqueta: "ARTESANAL", imagen: "https://images.unsplash.com/photo-1627308595179-d2b1b5b3a5a0?w=400&h=400&fit=crop" },
+            { id: 21, nombre: "Jugo Zuko Melón", descripcion: "Jugo en polvo sabor melón, 10 unidades", precioUnidad: 1.50, precioCaja: 15.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+            { id: 22, nombre: "Jugo Zuko Piña", descripcion: "Jugo en polvo sabor piña, 10 unidades", precioUnidad: 1.50, precioCaja: 15.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+            { id: 23, nombre: "Jugo Zuko Huesillos", descripcion: "Jugo en polvo sabor huesillos, 10 unidades", precioUnidad: 1.50, precioCaja: 15.00, categoria: "Bebidas", etiqueta: "TÍPICO", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+            { id: 24, nombre: "Huesillos Alto La Cruz", descripcion: "Huesillos deshidratados 500gr, 20 unidades", precioUnidad: 10.00, precioCaja: 200.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+            { id: 25, nombre: "Sopa Crema de Choclo", descripcion: "Crema de choclo, 20 sobres por caja", precioUnidad: 2.50, precioCaja: 50.00, categoria: "Despensa", etiqueta: "SOPAS", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+            { id: 26, nombre: "Sopa Crema de Espárragos", descripcion: "Crema de espárragos, 20 sobres por caja", precioUnidad: 2.50, precioCaja: 50.00, categoria: "Despensa", etiqueta: "SOPAS", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+            { id: 27, nombre: "Sopa Pollo con Arroz", descripcion: "Sopa de pollo con arroz, 20 sobres por caja", precioUnidad: 2.50, precioCaja: 50.00, categoria: "Despensa", etiqueta: "SOPAS", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+            { id: 28, nombre: "Porotos Granados", descripcion: "Porotos granados porción individual, 16 unidades", precioUnidad: 5.75, precioCaja: 92.00, categoria: "Despensa", etiqueta: "TÍPICO", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+            { id: 29, nombre: "Bebida Bilz", descripcion: "Bilz tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "CLÁSICO", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+            { id: 30, nombre: "Bebida Pap", descripcion: "Pap tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "CLÁSICO", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+            { id: 31, nombre: "Bebida Kent Piña", descripcion: "Kent piña tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+            { id: 32, nombre: "Bebida Limón Soda", descripcion: "Limon soda tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+            { id: 33, nombre: "Papayas al Jugo", descripcion: "Papayas al jugo 1 Lt, 12 unidades por caja", precioUnidad: 15.00, precioCaja: 180.00, categoria: "Bebidas", etiqueta: "PREMIUM", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" }
+        ];
+
+        let carrito = [];
+        let filtroActual = 'all';
+        let busquedaActual = '';
+
+        function renderProductos() {
+            const grid = document.getElementById('product-grid');
+            const productosFiltrados = productos.filter(p => {
+                const matchesFilter = filtroActual === 'all' || p.categoria === filtroActual;
+                const matchesSearch = p.nombre.toLowerCase().includes(busquedaActual.toLowerCase()) ||
+                                     p.descripcion.toLowerCase().includes(busquedaActual.toLowerCase());
+                return matchesFilter && matchesSearch;
+            });
+
+            grid.innerHTML = productosFiltrados.map(p => `
+                <div class="product-card rounded-xl shadow-sm overflow-hidden flex flex-col group">
+                    <div class="relative aspect-square overflow-hidden bg-gray-100">
+                        <img alt="${p.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${p.imagen}"/>
+                        <span class="absolute top-3 left-3 bg-chile-blue text-white text-[10px] font-bold px-2 py-1 rounded border border-white">${p.etiqueta}</span>
+                    </div>
+                    <div class="p-5 flex flex-col flex-1">
+                        <div class="mb-4">
+                            <h3 class="text-[#181311] font-bold text-lg mb-1">${p.nombre}</h3>
+                            <p class="text-[#6b4f43] text-xs">${p.descripcion}</p>
+                        </div>
+                        <div class="flex justify-between items-end mb-6">
+                            <div>
+                                <p class="text-[10px] text-chile-blue uppercase font-bold tracking-wider">Unidad</p>
+                                <p class="text-xl font-extrabold text-[#181311]">$${p.precioUnidad.toFixed(2)}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] text-chile-red uppercase font-bold tracking-wider">Caja</p>
+                                <p class="text-sm font-bold text-chile-blue">$${p.precioCaja.toFixed(2)}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-auto">
+                            <button onclick="agregarAlCarrito(${p.id}, 'unidad')" class="btn-unidad flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold transition-all">
+                                <span class="material-symbols-outlined text-sm">add</span> UNIDAD
+                            </button>
+                            <button onclick="agregarAlCarrito(${p.id}, 'caja')" 
+                                    class="btn-caja flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">
+                                <span class="material-symbols-outlined text-sm">inventory_2</span> CAJA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts(categoria) {
+            filtroActual = categoria;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const btnFilter = btn.dataset.filter;
+                if (btnFilter === categoria) {
+                    btn.classList.add('filter-active');
+                    btn.classList.remove('bg-white', 'text-[#181311]', 'border', 'border-chile-blue');
+                } else {
+                    btn.classList.remove('filter-active');
+                    btn.classList.add('bg-white', 'text-[#181311]', 'border', 'border-chile-blue');
+                }
+            });
+            renderProductos();
+        }
+
+        document.getElementById('searchInput')?.addEventListener('input', (e) => {
+            busquedaActual = e.target.value;
+            renderProductos();
+        });
+
+        function agregarAlCarrito(id, tipo) {
+            const producto = productos.find(p => p.id === id);
+            if (!producto) return;
+            const precio = tipo === 'unidad' ? producto.precioUnidad : producto.precioCaja;
+            const item = { id: Date.now() + Math.random(), productoId: id, nombre: producto.nombre, tipo, precio, cantidad: 1 };
+            carrito.push(item);
+            actualizarCarrito();
+            toggleCart(true);
+        }
+
+        function actualizarCarrito() {
+            const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            const itemCount = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+            document.getElementById('cart-count').textContent = itemCount;
+            document.getElementById('cart-item-count').textContent = itemCount;
+            document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('sidebar-total').textContent = `$${total.toFixed(2)}`;
+
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = carrito.map(item => {
+                return `
+                    <div class="cart-item flex justify-between items-start border-b border-blue-100 pb-4">
+                        <div>
+                            <p class="font-bold text-gray-800">${item.nombre}</p>
+                            <p class="text-xs text-chile-blue">${item.tipo === 'unidad' ? 'Unidad' : 'Caja'}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="cambiarCantidad(${item.id}, -1)" class="text-chile-red hover:text-chile-blue"><span class="material-symbols-outlined text-sm">remove</span></button>
+                                <span class="text-sm font-bold">${item.cantidad}</span>
+                                <button onclick="cambiarCantidad(${item.id}, 1)" class="text-chile-blue hover:text-chile-red"><span class="material-symbols-outlined text-sm">add</span></button>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-chile-blue">$${(item.precio * item.cantidad).toFixed(2)}</p>
+                            <button onclick="eliminarDelCarrito(${item.id})" class="text-xs text-chile-red hover:underline">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<p class="text-center text-chile-blue">Carrito vacío</p>';
+        }
+
+        function cambiarCantidad(id, delta) {
+            const item = carrito.find(i => i.id === id);
+            if (item) {
+                item.cantidad += delta;
+                if (item.cantidad <= 0) eliminarDelCarrito(id);
+                else actualizarCarrito();
+            }
+        }
+        function eliminarDelCarrito(id) { carrito = carrito.filter(i => i.id !== id); actualizarCarrito(); }
+        function clearCart() { carrito = []; actualizarCarrito(); }
+        function toggleCart(show) {
+            const sidebar = document.getElementById('cart-sidebar');
+            if (show === true) sidebar.classList.remove('translate-x-full');
+            else if (show === false) sidebar.classList.add('translate-x-full');
+            else sidebar.classList.toggle('translate-x-full');
+        }
+        function checkout() {
+            if (carrito.length === 0) { alert('Carrito vacío'); return; }
+            alert('¡Gracias por tu compra! Te contactaremos pronto.');
+            clearCart(); toggleCart(false);
+        }
+
+        function generarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(18); doc.text('Catálogo Latina INC - Montreal', 20, 20);
+            doc.setFontSize(12); doc.text('Productos disponibles:', 20, 30);
+            let y = 40;
+            productos.forEach((p, index) => {
+                if (y > 270) { doc.addPage(); y = 20; }
+                doc.setFontSize(9); doc.text(`${index+1}. ${p.nombre} - $${p.precioUnidad} uni / $${p.precioCaja} caja`, 20, y);
+                y += 6;
+            });
+            if (carrito.length) {
+                doc.addPage(); doc.setFontSize(16); doc.text('Cotización actual', 20, 20);
+                y = 30; let total = 0;
+                carrito.forEach((item, i) => {
+                    doc.text(`${i+1}. ${item.nombre} (${item.tipo}) x${item.cantidad} = $${(item.precio*item.cantidad).toFixed(2)}`, 20, y);
+                    total += item.precio*item.cantidad; y += 7;
+                });
+                doc.text(`Total: $${total.toFixed(2)} CAD`, 20, y+10);
+            }
+            doc.save('catalogo-latina-inc.pdf');
+        }
+
+        renderProductos(); actualizarCarrito();
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleCart(false); });
+    </script>
+</body>
+</html>
