@@ -134,6 +134,17 @@
                     </div>
                 </div>
             </div>
+            <div class="flex items-center gap-1 ml-2">
+    <button onclick="cambiarIdioma('es')" class="idioma-btn px-2 py-1 text-xs font-bold rounded border bg-chile-blue text-white border-chile-blue" data-idioma="es">
+        🇪🇸
+    </button>
+    <button onclick="cambiarIdioma('en')" class="idioma-btn px-2 py-1 text-xs font-bold rounded border opacity-50 hover:opacity-100" data-idioma="en">
+        🇬🇧
+    </button>
+    <button onclick="cambiarIdioma('fr')" class="idioma-btn px-2 py-1 text-xs font-bold rounded border opacity-50 hover:opacity-100" data-idioma="fr">
+        🇫🇷
+    </button>
+</div>
         </div>
     </header>
 
@@ -142,27 +153,50 @@
         <div class="absolute -top-3 -right-3 w-20 h-20 opacity-5 bg-chile-blue rotate-12" style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);"></div>
         
         <!-- Hero Section con acentos chilenos -->
-        <div class="mb-10 flex flex-col md:flex-row justify-between items-end gap-6 border-b border-blue-200 pb-8">
-            <div class="max-w-2xl">
-                <span class="inline-block bg-chile-blue text-white px-3 py-1 rounded-full text-xs font-bold mb-4 shadow-sm">🇨🇱 CATÁLOGO 2024 · HECHO EN CHILE</span>
-                <h2 class="text-4xl md:text-5xl font-black text-[#181311] leading-tight mb-4">Sabor de <span class="text-chile-blue underline decoration-chile-red/30">Chile</span> en Montreal</h2>
-                <p class="text-[#4a3b35] text-lg max-w-xl">Productos premium importados desde el corazón de Chile. Directo para tu mesa o negocio.</p>
+        <div class="mb-10 flex flex-col md:flex-row justify-between items-end gap-6 border-b border-primary/10 pb-8">
+    <div class="max-w-2xl">
+        <span class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold mb-4" id="catalogo-badge">CATÁLOGO 2024</span>
+        <h2 class="text-4xl md:text-5xl font-black text-[#181311] leading-tight mb-4" id="hero-titulo">Sabor de Chile en <span class="text-primary underline decoration-primary/20">Montreal</span></h2>
+        <p class="text-[#8a6b60] text-lg max-w-xl" id="hero-descripcion">Descubre nuestra selección exclusiva de productos premium importados directamente desde el corazón de Chile. Calidad artesanal para su mesa o negocio.</p>
+    </div>
+    <button onclick="generarPDF()" class="flex items-center gap-2 bg-[#181311] text-white px-6 py-3 rounded-lg font-bold text-sm hover:bg-primary transition-colors shadow-lg shadow-black/5" id="pdf-descargar">
+        <span class="material-symbols-outlined text-lg">download</span>
+        <span>Descargar Catálogo PDF</span>
+    </button>
+</div>
+
+<!-- Filter Bar - con IDs y data-atributos -->
+<div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-8" id="filtros-container">
+    <button onclick="filterProducts('all')" class="filter-btn px-4 py-2 bg-primary text-white border-primary shadow-sm rounded-lg text-sm font-bold whitespace-nowrap" data-filter="all" id="filtro-todos">Todos</button>
+    <button onclick="filterProducts('Mermeladas')" class="filter-btn px-4 py-2 bg-white text-[#181311] border border-primary hover:bg-primary/10 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Mermeladas" id="filtro-mermeladas">Mermeladas</button>
+    <button onclick="filterProducts('Galletas')" class="filter-btn px-4 py-2 bg-white text-[#181311] border border-primary hover:bg-primary/10 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Galletas" id="filtro-galletas">Galletas</button>
+    <button onclick="filterProducts('Chocolates')" class="filter-btn px-4 py-2 bg-white text-[#181311] border border-primary hover:bg-primary/10 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Chocolates" id="filtro-chocolates">Chocolates</button>
+    <button onclick="filterProducts('Salsas')" class="filter-btn px-4 py-2 bg-white text-[#181311] border border-primary hover:bg-primary/10 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Salsas" id="filtro-salsas">Salsas</button>
+    <button onclick="filterProducts('Despensa')" class="filter-btn px-4 py-2 bg-white text-[#181311] border border-primary hover:bg-primary/10 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Despensa" id="filtro-despensa">Despensa</button>
+    <button onclick="filterProducts('Bebidas')" class="filter-btn px-4 py-2 bg-white text-[#181311] border border-primary hover:bg-primary/10 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Bebidas" id="filtro-bebidas">Bebidas</button>
+</div>
+
+<!-- Footer - con IDs -->
+<div class="fixed bottom-0 inset-x-0 bg-white border-t border-primary/20 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] px-2 md:px-10 py-3 md:py-6 z-40">
+    <div class="max-w-7xl mx-auto flex flex-row items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+            <div class="flex flex-col">
+                <span class="text-[8px] md:text-[10px] uppercase font-bold text-[#8a6b60]">Total</span>
+                <span id="cart-total" class="text-lg md:text-3xl font-black text-primary">$0.00</span>
             </div>
-            <button onclick="generarPDF()" class="flex items-center gap-2 bg-chile-blue text-white px-6 py-3 rounded-lg font-bold text-sm hover:bg-chile-red transition-colors shadow-lg border border-white/20">
-                <span class="material-symbols-outlined text-lg">download</span>
-                Descargar Catálogo PDF
+        </div>
+        <div class="flex items-center gap-2">
+            <h4 class="text-sm font-extrabold text-[#181311] hidden sm:block" id="resumen-titulo">Resumen de Cotización</h4>
+            <button onclick="clearCart()" class="flex items-center justify-center gap-1 px-3 md:px-8 py-2 md:py-3 bg-[#f5f1f0] rounded-lg text-xs md:text-sm" id="limpiar-btn">
+                <span class="material-symbols-outlined text-sm md:text-base">delete</span>
+                <span>LIMPIAR</span>
+            </button>
+            <button onclick="generarPDF()" class="flex items-center justify-center gap-1 px-4 md:px-10 py-2 md:py-3 bg-primary text-white rounded-lg text-xs md:text-sm font-bold" id="pdf-btn">
+                <span class="material-symbols-outlined text-sm md:text-base">picture_as_pdf</span>
+                <span>PDF</span>
             </button>
         </div>
-
-        <!-- Filter Bar – con colores azul, rojo, blanco (el activo azul) -->
-        <div class="flex flex-wrap items-center gap-2 mb-8 pb-2">
-    <button onclick="filterProducts('all')" class="filter-btn px-4 md:px-5 py-2 bg-chile-blue text-white border-chile-blue shadow-sm rounded-lg text-sm font-bold whitespace-nowrap" data-filter="all">Todos</button>
-    <button onclick="filterProducts('Mermeladas')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Mermeladas">Mermeladas</button>
-    <button onclick="filterProducts('Galletas')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Galletas">Galletas</button>
-    <button onclick="filterProducts('Chocolates')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Chocolates">Chocolates</button>
-    <button onclick="filterProducts('Salsas')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Salsas">Salsas</button>
-    <button onclick="filterProducts('Despensa')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Despensa">Despensa</button>
-    <button onclick="filterProducts('Bebidas')" class="filter-btn px-4 md:px-5 py-2 bg-white text-[#181311] border border-chile-blue hover:bg-blue-50 rounded-lg text-sm font-medium whitespace-nowrap" data-filter="Bebidas">Bebidas</button>
+    </div>
 </div>
 
         <!-- Product Grid -->
@@ -225,199 +259,580 @@
     <div class="fixed -z-10 bottom-10 left-5 w-40 h-40 opacity-10 bg-chile-blue" style="clip-path: polygon(0% 0%, 100% 0%, 50% 100%);"></div>
     <div class="fixed -z-10 top-20 right-5 w-32 h-32 opacity-10 bg-chile-red rounded-full blur-xl"></div>
 
-    <script>
-        // Base de datos de productos (misma)
-        const productos = [
-            { id: 1, nombre: "Mermelada de Mora", descripcion: "Mermelada artesanal, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_mora.png" },
-            { id: 2, nombre: "Mermelada de Alcayota", descripcion: "Tradicional alcayota, 24 unidades por caja", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Mermeladas", etiqueta: "TRADICIÓN", imagen: "./assets/img/mermelada_alcayota.png" },
-            { id: 3, nombre: "Mermelada de Damasco", descripcion: "Damasco seleccionado, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_damasco.png" },
-            { id: 4, nombre: "Mermelada de Durazno", descripcion: "Durazno fresco, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_durazno.png" },
-            { id: 5, nombre: "Mermelada de Mango", descripcion: "Mango tropical, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "EXÓTICO", imagen: "./assets/img/mermelada_mango.png" },
-            { id: 6, nombre: "Mermelada de Berries", descripcion: "Mix de frutos rojos, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "PREMIUM", imagen:"./assets/img/mermelada_berries.png" },
-            { id: 7, nombre: "Dulce de Membrillo", descripcion: "Clásico dulce de membrillo, 12 unidades", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "./assets/img/dulce_membrillo.png" },
-            { id: 8, nombre: "Galletas Triton", descripcion: "Galletas sabor chocolate, 30 unidades por caja", precioUnidad: 4.00, precioCaja: 120.00, categoria: "Galletas", etiqueta: "POPULAR", imagen: "./assets/img/galleta_triton.png" },
-            { id: 9, nombre: "Galletas Soda Regular", descripcion: "Galletas de soda clásicas, 24 unidades", precioUnidad: 4.00, precioCaja: 96.00, categoria: "Galletas", etiqueta: "CLÁSICO", imagen: "./assets/img/galletas_soda.png" },
-            { id: 10, nombre: "Galletas Negrita", descripcion: "Galletas con chispas de chocolate, 20 unidades", precioUnidad: 1.75, precioCaja: 35.00, categoria: "Galletas", etiqueta: "ECONÓMICO", imagen: "./assets/img/galletas_negrita.png" },
-            { id: 11, nombre: "Galletas de Coco", descripcion: "Galletas sabor coco, 30 unidades por caja", precioUnidad: 3.50, precioCaja: 105.00, categoria: "Galletas", etiqueta: "ESPECIAL", imagen: "./assets/img/galletas_coco.png" },
-            { id: 12, nombre: "Galletas de Limón", descripcion: "Galletas sabor limón, 30 unidades por caja", precioUnidad: 3.50, precioCaja: 105.00, categoria: "Galletas", etiqueta: "ESPECIAL", imagen:"./assets/img/galletas_limón.png" },
-            { id: 13, nombre: "Chocolate Super 8", descripcion: "Pack x 24 unidades, ideal para compartir", precioUnidad: 1.50, precioCaja: 36.00, categoria:"Chocolates", etiqueta:"INFANTIL", imagen:"./assets/img/galletas_super8.png" },
-            { id: 14, nombre: "Chocolate Sahne Nuss", descripcion: "Chocolate con nueces 160gr, 21 unidades", precioUnidad: 10.00, precioCaja: 210.00, categoria: "Chocolates", etiqueta: "PREMIUM", imagen: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=400&fit=crop" },
-            { id: 15, nombre: "Ají Salsa Don Juan", descripcion: "Salsa de ají picante 240gr, 24 unidades", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Salsas", etiqueta: "PICANTE", imagen: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" },
-            { id: 16, nombre: "Ají Pebre Don Juan", descripcion: "Pebre tradicional 240gr, 24 unidades", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Salsas", etiqueta: "TÍPICO", imagen: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" },
-            { id: 17, nombre: "Mostaza Don Juan", descripcion: "Mostaza artesanal 240gr, 24 unidades", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Salsas", etiqueta: "CLÁSICO", imagen: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" },
-            { id: 18, nombre: "Trigo Mote Oso", descripcion: "Trigo mote 500gr, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
-            { id: 19, nombre: "Harina Tostada Oso", descripcion: "Harina tostada 500gr, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
-            { id: 20, nombre: "Chancaca Deliciosa", descripcion: "Chancaca 250gr, 12 unidades por caja", precioUnidad: 6.50, precioCaja: 78.00, categoria: "Despensa", etiqueta: "ARTESANAL", imagen: "https://images.unsplash.com/photo-1627308595179-d2b1b5b3a5a0?w=400&h=400&fit=crop" },
-            { id: 21, nombre: "Jugo Zuko Melón", descripcion: "Jugo en polvo sabor melón, 10 unidades", precioUnidad: 1.50, precioCaja: 15.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
-            { id: 22, nombre: "Jugo Zuko Piña", descripcion: "Jugo en polvo sabor piña, 10 unidades", precioUnidad: 1.50, precioCaja: 15.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
-            { id: 23, nombre: "Jugo Zuko Huesillos", descripcion: "Jugo en polvo sabor huesillos, 10 unidades", precioUnidad: 1.50, precioCaja: 15.00, categoria: "Bebidas", etiqueta: "TÍPICO", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
-            { id: 24, nombre: "Huesillos Alto La Cruz", descripcion: "Huesillos deshidratados 500gr, 20 unidades", precioUnidad: 10.00, precioCaja: 200.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
-            { id: 25, nombre: "Sopa Crema de Choclo", descripcion: "Crema de choclo, 20 sobres por caja", precioUnidad: 2.50, precioCaja: 50.00, categoria: "Despensa", etiqueta: "SOPAS", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
-            { id: 26, nombre: "Sopa Crema de Espárragos", descripcion: "Crema de espárragos, 20 sobres por caja", precioUnidad: 2.50, precioCaja: 50.00, categoria: "Despensa", etiqueta: "SOPAS", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
-            { id: 27, nombre: "Sopa Pollo con Arroz", descripcion: "Sopa de pollo con arroz, 20 sobres por caja", precioUnidad: 2.50, precioCaja: 50.00, categoria: "Despensa", etiqueta: "SOPAS", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
-            { id: 28, nombre: "Porotos Granados", descripcion: "Porotos granados porción individual, 16 unidades", precioUnidad: 5.75, precioCaja: 92.00, categoria: "Despensa", etiqueta: "TÍPICO", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
-            { id: 29, nombre: "Bebida Bilz", descripcion: "Bilz tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "CLÁSICO", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
-            { id: 30, nombre: "Bebida Pap", descripcion: "Pap tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "CLÁSICO", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
-            { id: 31, nombre: "Bebida Kent Piña", descripcion: "Kent piña tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
-            { id: 32, nombre: "Bebida Limón Soda", descripcion: "Limon soda tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
-            { id: 33, nombre: "Papayas al Jugo", descripcion: "Papayas al jugo 1 Lt, 12 unidades por caja", precioUnidad: 15.00, precioCaja: 180.00, categoria: "Bebidas", etiqueta: "PREMIUM", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" }
-        ];
+<script>
+    // 1. VARIABLES DE IDIOMA Y TRADUCCIONES
+    let idiomaActual = 'es';
+    
+    const traducciones = {
+        es: {
+            admin: "Administrador",
+            catalogo: "CATÁLOGO 2024",
+            hero_titulo: "Sabor de Chile en",
+            hero_subtitulo: "Montreal",
+            hero_descripcion: "Descubre nuestra selección exclusiva de productos premium importados directamente desde el corazón de Chile. Calidad artesanal para su mesa o negocio.",
+            descargar_pdf: "Descargar Catálogo PDF",
+            limpiar: "LIMPIAR",
+            pdf: "DESCARGAR PDF",
+            todos: "Todos",
+            mermeladas: "Mermeladas",
+            galletas: "Galletas",
+            chocolates: "Chocolates",
+            salsas: "Salsas",
+            despensa: "Despensa",
+            bebidas: "Bebidas",
+            prod_mermelada_mora: "Mermelada de Mora",
+            prod_mermelada_alcayota: "Mermelada de Alcayota",
+            prod_mermelada_damasco: "Mermelada de Damasco",
+            prod_mermelada_durazno: "Mermelada de Durazno",
+            prod_mermelada_mango: "Mermelada de Mango",
+            prod_mermelada_berries: "Mermelada de Berries",
+            prod_dulce_membrillo: "Dulce de Membrillo",
+            prod_galletas_triton: "Galletas Triton",
+            prod_galletas_soda: "Galletas Soda",
+            prod_galletas_negrita: "Galletas Negrita",
+            prod_galletas_coco: "Galletas de Coco",
+            prod_galletas_limon: "Galletas de Limón",
+            prod_chocolate_super8: "Chocolate Super 8",
+            prod_chocolate_sahne: "Chocolate Sahne Nuss",
+            prod_aji_salsa: "Ají Salsa",
+            prod_aji_pebre: "Ají Pebre",
+            prod_mostaza: "Mostaza",
+            prod_trigo_mote: "Trigo Mote",
+            prod_harina_tostada: "Harina Tostada",
+            prod_chancaca: "Chancaca",
+            prod_jugo_melon: "Jugo de Melón",
+            prod_jugo_pina: "Jugo de Piña",
+            prod_jugo_huesillos: "Jugo de Huesillos",
+            prod_huesillos: "Huesillos",
+            prod_sopa_choclo: "Sopa de Choclo",
+            prod_sopa_esparragos: "Sopa de Espárragos",
+            prod_sopa_pollo: "Sopa de Pollo",
+            prod_porotos: "Porotos Granados",
+            prod_bilz: "Bebida Bilz",
+            prod_pap: "Bebida Pap",
+            prod_kent_pina: "Bebida Kent Piña",
+            prod_limon_soda: "Bebida Limón Soda",
+            prod_papayas: "Papayas al Jugo",
+            desc_artesanal: "Artesanal, {cantidad} por caja",
+            desc_tradicional: "Tradicional, {cantidad} por caja",
+            desc_unidades: "unidades",
+            carrito_titulo: "Carrito de Compras",
+            carrito_vacio: "Carrito vacío",
+            total: "Total",
+            proceder_pago: "Proceder al Pago",
+            productos_seleccionados: "productos seleccionados",
+            resumen: "Resumen de Cotización",
+            eliminar: "Eliminar",
+            unidad: "Ud.",
+            caja: "Caja",
+            unidad_largo: "Unidad",
+            caja_largo: "Caja",
+            etiqueta_artesanal: "ARTESANAL",
+            etiqueta_tradicion: "TRADICIÓN",
+            etiqueta_premium: "PREMIUM",
+            etiqueta_popular: "POPULAR",
+            etiqueta_clasico: "CLÁSICO",
+            etiqueta_picante: "PICANTE",
+            etiqueta_refrescante: "REFRESCANTE",
+            etiqueta_tipico: "TÍPICO",
+            etiqueta_infantil: "INFANTIL",
+            etiqueta_sopas: "SOPAS",
+            etiqueta_economico: "ECONÓMICO",
+            etiqueta_especial: "ESPECIAL",
+            etiqueta_exotico: "EXÓTICO"
+        },
+        
+        en: {
+            admin: "Administrator",
+            catalogo: "CATALOG 2024",
+            hero_titulo: "Flavor of Chile in",
+            hero_subtitulo: "Montreal",
+            hero_descripcion: "Discover our exclusive selection of premium products imported directly from the heart of Chile. Artisanal quality for your table or business.",
+            descargar_pdf: "Download PDF Catalog",
+            limpiar: "CLEAR",
+            pdf: "DOWNLOAD PDF",
+            todos: "All",
+            mermeladas: "Jams",
+            galletas: "Cookies",
+            chocolates: "Chocolates",
+            salsas: "Sauces",
+            despensa: "Pantry",
+            bebidas: "Drinks",
+            prod_mermelada_mora: "Blackberry Jam",
+            prod_mermelada_alcayota: "Alcayota Jam",
+            prod_mermelada_damasco: "Apricot Jam",
+            prod_mermelada_durazno: "Peach Jam",
+            prod_mermelada_mango: "Mango Jam",
+            prod_mermelada_berries: "Berries Jam",
+            prod_dulce_membrillo: "Quince Sweet",
+            prod_galletas_triton: "Triton Cookies",
+            prod_galletas_soda: "Soda Crackers",
+            prod_galletas_negrita: "Negrita Cookies",
+            prod_galletas_coco: "Coconut Cookies",
+            prod_galletas_limon: "Lemon Cookies",
+            prod_chocolate_super8: "Super 8 Chocolate",
+            prod_chocolate_sahne: "Sahne Nuss Chocolate",
+            prod_aji_salsa: "Chili Sauce",
+            prod_aji_pebre: "Chili Pebre",
+            prod_mostaza: "Mustard",
+            prod_trigo_mote: "Mote Wheat",
+            prod_harina_tostada: "Toasted Flour",
+            prod_chancaca: "Chancaca",
+            prod_jugo_melon: "Melon Juice",
+            prod_jugo_pina: "Pineapple Juice",
+            prod_jugo_huesillos: "Huesillos Juice",
+            prod_huesillos: "Dried Peaches",
+            prod_sopa_choclo: "Corn Soup",
+            prod_sopa_esparragos: "Asparagus Soup",
+            prod_sopa_pollo: "Chicken Soup",
+            prod_porotos: "Granados Beans",
+            prod_bilz: "Bilz Drink",
+            prod_pap: "Pap Drink",
+            prod_kent_pina: "Kent Pineapple",
+            prod_limon_soda: "Lemon Soda",
+            prod_papayas: "Papaya in Juice",
+            desc_artesanal: "Artisanal, {cantidad} per box",
+            desc_tradicional: "Traditional, {cantidad} per box",
+            desc_unidades: "units",
+            carrito_titulo: "Shopping Cart",
+            carrito_vacio: "Empty cart",
+            total: "Total",
+            proceder_pago: "Checkout",
+            productos_seleccionados: "selected products",
+            resumen: "Quote Summary",
+            eliminar: "Remove",
+            unidad: "Unit",
+            caja: "Box",
+            unidad_largo: "Unit",
+            caja_largo: "Box",
+            etiqueta_artesanal: "ARTISANAL",
+            etiqueta_tradicion: "TRADITION",
+            etiqueta_premium: "PREMIUM",
+            etiqueta_popular: "POPULAR",
+            etiqueta_clasico: "CLASSIC",
+            etiqueta_picante: "SPICY",
+            etiqueta_refrescante: "REFRESHING",
+            etiqueta_tipico: "TYPICAL",
+            etiqueta_infantil: "KIDS",
+            etiqueta_sopas: "SOUPS",
+            etiqueta_economico: "ECONOMY",
+            etiqueta_especial: "SPECIAL",
+            etiqueta_exotico: "EXOTIC"
+        },
+        
+        fr: {
+            admin: "Administrateur",
+            catalogo: "CATALOGUE 2024",
+            hero_titulo: "Saveur du Chili à",
+            hero_subtitulo: "Montréal",
+            hero_descripcion: "Découvrez notre sélection exclusive de produits premium importés directement du cœur du Chili. Qualité artisanale pour votre table ou votre entreprise.",
+            descargar_pdf: "Télécharger le Catalogue PDF",
+            limpiar: "EFFACER",
+            pdf: "TÉLÉCHARGER PDF",
+            todos: "Tous",
+            mermeladas: "Confitures",
+            galletas: "Biscuits",
+            chocolates: "Chocolats",
+            salsas: "Sauces",
+            despensa: "Épicerie",
+            bebidas: "Boissons",
+            prod_mermelada_mora: "Confiture de Mûre",
+            prod_mermelada_alcayota: "Confiture d'Alcayota",
+            prod_mermelada_damasco: "Confiture d'Abricot",
+            prod_mermelada_durazno: "Confiture de Pêche",
+            prod_mermelada_mango: "Confiture de Mangue",
+            prod_mermelada_berries: "Confiture de Baies",
+            prod_dulce_membrillo: "Doux de Coing",
+            prod_galletas_triton: "Biscuits Triton",
+            prod_galletas_soda: "Biscuits Soda",
+            prod_galletas_negrita: "Biscuits Negrita",
+            prod_galletas_coco: "Biscuits à la Noix de Coco",
+            prod_galletas_limon: "Biscuits au Citron",
+            prod_chocolate_super8: "Chocolat Super 8",
+            prod_chocolate_sahne: "Chocolat Sahne Nuss",
+            prod_aji_salsa: "Sauce Piment",
+            prod_aji_pebre: "Pebre au Piment",
+            prod_mostaza: "Moutarde",
+            prod_trigo_mote: "Blé Mote",
+            prod_harina_tostada: "Farine Grillée",
+            prod_chancaca: "Chancaca",
+            prod_jugo_melon: "Jus de Melon",
+            prod_jugo_pina: "Jus d'Ananas",
+            prod_jugo_huesillos: "Jus de Huesillos",
+            prod_huesillos: "Pêches Séchées",
+            prod_sopa_choclo: "Soupe de Maïs",
+            prod_sopa_esparragos: "Soupe d'Asperges",
+            prod_sopa_pollo: "Soupe de Poulet",
+            prod_porotos: "Haricots Granados",
+            prod_bilz: "Boisson Bilz",
+            prod_pap: "Boisson Pap",
+            prod_kent_pina: "Boisson Kent Ananas",
+            prod_limon_soda: "Boisson Citron Soda",
+            prod_papayas: "Papayes au Jus",
+            desc_artesanal: "Artisanal, {cantidad} par boîte",
+            desc_tradicional: "Traditionnel, {cantidad} par boîte",
+            desc_unidades: "unités",
+            carrito_titulo: "Panier d'Achat",
+            carrito_vacio: "Panier vide",
+            total: "Total",
+            proceder_pago: "Payer",
+            productos_seleccionados: "produits sélectionnés",
+            resumen: "Résumé du Devis",
+            eliminar: "Supprimer",
+            unidad: "Unité",
+            caja: "Boîte",
+            unidad_largo: "Unité",
+            caja_largo: "Boîte",
+            etiqueta_artesanal: "ARTISANAL",
+            etiqueta_tradicion: "TRADITION",
+            etiqueta_premium: "PREMIUM",
+            etiqueta_popular: "POPULAIRE",
+            etiqueta_clasico: "CLASSIQUE",
+            etiqueta_picante: "ÉPICÉ",
+            etiqueta_refrescante: "RAFRÂICHISSANT",
+            etiqueta_tipico: "T YPIQUE",
+            etiqueta_infantil: "ENFANTS",
+            etiqueta_sopas: "SOUPES",
+            etiqueta_economico: "ÉCONOMIQUE",
+            etiqueta_especial: "SPÉCIAL",
+            etiqueta_exotico: "EXOTIQUE"
+        }
+    };
 
-        let carrito = [];
-        let filtroActual = 'all';
-        let busquedaActual = '';
+    // 2. FUNCIONES DE IDIOMA
+    function t(clave, params = {}) {
+        let texto = traducciones[idiomaActual]?.[clave] || traducciones['es'][clave] || clave;
+        
+        Object.keys(params).forEach(key => {
+            texto = texto.replace(`{${key}}`, params[key]);
+        });
+        
+        return texto;
+    }
 
-        function renderProductos() {
-            const grid = document.getElementById('product-grid');
-            const productosFiltrados = productos.filter(p => {
-                const matchesFilter = filtroActual === 'all' || p.categoria === filtroActual;
-                const matchesSearch = p.nombre.toLowerCase().includes(busquedaActual.toLowerCase()) ||
-                                     p.descripcion.toLowerCase().includes(busquedaActual.toLowerCase());
-                return matchesFilter && matchesSearch;
-            });
+    function cambiarIdioma(idioma) {
+        idiomaActual = idioma;
+        
+        // Actualizar botones de idioma
+        document.querySelectorAll('.idioma-btn').forEach(btn => {
+            if (btn.dataset.idioma === idioma) {
+                btn.classList.remove('opacity-50');
+                btn.classList.add('bg-chile-blue', 'text-white');
+            } else {
+                btn.classList.add('opacity-50');
+                btn.classList.remove('bg-chile-blue', 'text-white');
+            }
+        });
+        
+        // Actualizar textos estáticos
+        actualizarTextosEstaticos();
+        
+        // Re-renderizar productos
+        renderProductos();
+    }
 
-            grid.innerHTML = productosFiltrados.map(p => `
+    function actualizarTextosEstaticos() {
+        // Helper seguro para actualizar textos
+        const setText = (selector, clave) => {
+            const elemento = document.querySelector(selector);
+            if (elemento) elemento.textContent = t(clave);
+        };
+        
+        const setHtml = (selector, html) => {
+            const elemento = document.querySelector(selector);
+            if (elemento) elemento.innerHTML = html;
+        };
+        
+        // Hero section
+        setText('#catalogo-badge', 'catalogo');
+        setHtml('.hero-titulo', `${t('hero_titulo')} <span class="text-primary underline decoration-primary/20">${t('hero_subtitulo')}</span>`);
+        setText('.hero-descripcion', 'hero_descripcion');
+        
+        // Botón PDF descargar
+        const pdfBtn = document.querySelector('.pdf-descargar span:last-child');
+        if (pdfBtn) pdfBtn.textContent = t('descargar_pdf');
+        
+        // Filtros
+        setText('[data-filter="all"]', 'todos');
+        setText('[data-filter="Mermeladas"]', 'mermeladas');
+        setText('[data-filter="Galletas"]', 'galletas');
+        setText('[data-filter="Chocolates"]', 'chocolates');
+        setText('[data-filter="Salsas"]', 'salsas');
+        setText('[data-filter="Despensa"]', 'despensa');
+        setText('[data-filter="Bebidas"]', 'bebidas');
+        
+        // Footer
+        setText('.resumen-titulo', 'resumen');
+        
+        const limpiarBtn = document.querySelector('.limpiar-btn span:last-child');
+        if (limpiarBtn) limpiarBtn.textContent = t('limpiar');
+        
+        const pdfFooterBtn = document.querySelector('.pdf-btn span:last-child');
+        if (pdfFooterBtn) pdfFooterBtn.textContent = t('pdf');
+    }
+
+    // 3. BASE DE DATOS DE PRODUCTOS
+    const productos = [
+        { id: 1, nombreKey: "prod_mermelada_mora", nombre: "Mermelada de Mora", descripcion: "Mermelada artesanal, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_mora.png" },
+        { id: 2, nombreKey: "prod_mermelada_alcayota", nombre: "Mermelada de Alcayota", descripcion: "Tradicional alcayota, 24 unidades por caja", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Mermeladas", etiqueta: "TRADICIÓN", imagen: "./assets/img/mermelada_alcayota.png" },
+        { id: 3, nombreKey: "prod_mermelada_damasco", nombre: "Mermelada de Damasco", descripcion: "Damasco seleccionado, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_damasco.png" },
+        { id: 4, nombreKey: "prod_mermelada_durazno", nombre: "Mermelada de Durazno", descripcion: "Durazno fresco, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_durazno.png" },
+        { id: 5, nombreKey: "prod_mermelada_mango", nombre: "Mermelada de Mango", descripcion: "Mango tropical, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "EXÓTICO", imagen: "./assets/img/mermelada_mango.png" },
+        { id: 6, nombreKey: "prod_mermelada_berries", nombre: "Mermelada de Berries", descripcion: "Mix de frutos rojos, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "PREMIUM", imagen: "./assets/img/mermelada_berries.png" },
+        { id: 7, nombreKey: "prod_dulce_membrillo", nombre: "Dulce de Membrillo", descripcion: "Clásico dulce de membrillo, 12 unidades", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "./assets/img/dulce_membrillo.png" },
+        { id: 8, nombreKey: "prod_galletas_triton", nombre: "Galletas Triton", descripcion: "Galletas sabor chocolate, 30 unidades por caja", precioUnidad: 4.00, precioCaja: 120.00, categoria: "Galletas", etiqueta: "POPULAR", imagen: "./assets/img/galleta_triton.png" },
+        { id: 9, nombreKey: "prod_galletas_soda", nombre: "Galletas Soda Regular", descripcion: "Galletas de soda clásicas, 24 unidades", precioUnidad: 4.00, precioCaja: 96.00, categoria: "Galletas", etiqueta: "CLÁSICO", imagen: "./assets/img/galletas_soda.png" },
+        { id: 10, nombreKey: "prod_galletas_negrita", nombre: "Galletas Negrita", descripcion: "Galletas con chispas de chocolate, 20 unidades", precioUnidad: 1.75, precioCaja: 35.00, categoria: "Galletas", etiqueta: "ECONÓMICO", imagen: "./assets/img/galletas_negrita.png" },
+        { id: 11, nombreKey: "prod_galletas_coco", nombre: "Galletas de Coco", descripcion: "Galletas sabor coco, 30 unidades por caja", precioUnidad: 3.50, precioCaja: 105.00, categoria: "Galletas", etiqueta: "ESPECIAL", imagen: "./assets/img/galletas_coco.png" },
+        { id: 12, nombreKey: "prod_galletas_limon", nombre: "Galletas de Limón", descripcion: "Galletas sabor limón, 30 unidades por caja", precioUnidad: 3.50, precioCaja: 105.00, categoria: "Galletas", etiqueta: "ESPECIAL", imagen: "./assets/img/galletas_limon.png" },
+        { id: 13, nombreKey: "prod_chocolate_super8", nombre: "Chocolate Super 8", descripcion: "Pack x 24 unidades, ideal para compartir", precioUnidad: 1.50, precioCaja: 36.00, categoria: "Chocolates", etiqueta: "INFANTIL", imagen: "./assets/img/galletas_super8.png" },
+        { id: 14, nombreKey: "prod_chocolate_sahne", nombre: "Chocolate Sahne Nuss", descripcion: "Chocolate con nueces 160gr, 21 unidades", precioUnidad: 10.00, precioCaja: 210.00, categoria: "Chocolates", etiqueta: "PREMIUM", imagen: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&h=400&fit=crop" },
+        { id: 15, nombreKey: "prod_aji_salsa", nombre: "Ají Salsa Don Juan", descripcion: "Salsa de ají picante 240gr, 24 unidades", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Salsas", etiqueta: "PICANTE", imagen: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" },
+        { id: 16, nombreKey: "prod_aji_pebre", nombre: "Ají Pebre Don Juan", descripcion: "Pebre tradicional 240gr, 24 unidades", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Salsas", etiqueta: "TÍPICO", imagen: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" },
+        { id: 17, nombreKey: "prod_mostaza", nombre: "Mostaza Don Juan", descripcion: "Mostaza artesanal 240gr, 24 unidades", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Salsas", etiqueta: "CLÁSICO", imagen: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" },
+        { id: 18, nombreKey: "prod_trigo_mote", nombre: "Trigo Mote Oso", descripcion: "Trigo mote 500gr, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+        { id: 19, nombreKey: "prod_harina_tostada", nombre: "Harina Tostada Oso", descripcion: "Harina tostada 500gr, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+        { id: 20, nombreKey: "prod_chancaca", nombre: "Chancaca Deliciosa", descripcion: "Chancaca 250gr, 12 unidades por caja", precioUnidad: 6.50, precioCaja: 78.00, categoria: "Despensa", etiqueta: "ARTESANAL", imagen: "https://images.unsplash.com/photo-1627308595179-d2b1b5b3a5a0?w=400&h=400&fit=crop" },
+        { id: 21, nombreKey: "prod_jugo_melon", nombre: "Jugo Zuko Melón", descripcion: "Jugo en polvo sabor melón, 10 unidades", precioUnidad: 1.50, precioCaja: 15.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+        { id: 22, nombreKey: "prod_jugo_pina", nombre: "Jugo Zuko Piña", descripcion: "Jugo en polvo sabor piña, 10 unidades", precioUnidad: 1.50, precioCaja: 15.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+        { id: 23, nombreKey: "prod_jugo_huesillos", nombre: "Jugo Zuko Huesillos", descripcion: "Jugo en polvo sabor huesillos, 10 unidades", precioUnidad: 1.50, precioCaja: 15.00, categoria: "Bebidas", etiqueta: "TÍPICO", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+        { id: 24, nombreKey: "prod_huesillos", nombre: "Huesillos Alto La Cruz", descripcion: "Huesillos deshidratados 500gr, 20 unidades", precioUnidad: 10.00, precioCaja: 200.00, categoria: "Despensa", etiqueta: "TRADICIÓN", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+        { id: 25, nombreKey: "prod_sopa_choclo", nombre: "Sopa Crema de Choclo", descripcion: "Crema de choclo, 20 sobres por caja", precioUnidad: 2.50, precioCaja: 50.00, categoria: "Despensa", etiqueta: "SOPAS", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+        { id: 26, nombreKey: "prod_sopa_esparragos", nombre: "Sopa Crema de Espárragos", descripcion: "Crema de espárragos, 20 sobres por caja", precioUnidad: 2.50, precioCaja: 50.00, categoria: "Despensa", etiqueta: "SOPAS", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+        { id: 27, nombreKey: "prod_sopa_pollo", nombre: "Sopa Pollo con Arroz", descripcion: "Sopa de pollo con arroz, 20 sobres por caja", precioUnidad: 2.50, precioCaja: 50.00, categoria: "Despensa", etiqueta: "SOPAS", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+        { id: 28, nombreKey: "prod_porotos", nombre: "Porotos Granados", descripcion: "Porotos granados porción individual, 16 unidades", precioUnidad: 5.75, precioCaja: 92.00, categoria: "Despensa", etiqueta: "TÍPICO", imagen: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=400&fit=crop" },
+        { id: 29, nombreKey: "prod_bilz", nombre: "Bebida Bilz", descripcion: "Bilz tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "CLÁSICO", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+        { id: 30, nombreKey: "prod_pap", nombre: "Bebida Pap", descripcion: "Pap tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "CLÁSICO", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+        { id: 31, nombreKey: "prod_kent_pina", nombre: "Bebida Kent Piña", descripcion: "Kent piña tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+        { id: 32, nombreKey: "prod_limon_soda", nombre: "Bebida Limón Soda", descripcion: "Limon soda tarro 350cc, 24 unidades por caja", precioUnidad: 3.00, precioCaja: 72.00, categoria: "Bebidas", etiqueta: "REFRESCANTE", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" },
+        { id: 33, nombreKey: "prod_papayas", nombre: "Papayas al Jugo", descripcion: "Papayas al jugo 1 Lt, 12 unidades por caja", precioUnidad: 15.00, precioCaja: 180.00, categoria: "Bebidas", etiqueta: "PREMIUM", imagen: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=400&fit=crop" }
+    ];
+
+    // 4. VARIABLES DE ESTADO
+    let carrito = [];
+    let filtroActual = 'all';
+    let busquedaActual = '';
+
+    // 5. FUNCIÓN DE RENDERIZADO CON TRADUCCIONES
+    function renderProductos() {
+        const grid = document.getElementById('product-grid');
+        if (!grid) return;
+        
+        const productosFiltrados = productos.filter(p => {
+            const matchesFilter = filtroActual === 'all' || p.categoria === filtroActual;
+            const matchesSearch = p.nombre.toLowerCase().includes(busquedaActual.toLowerCase()) ||
+                                 p.descripcion.toLowerCase().includes(busquedaActual.toLowerCase());
+            return matchesFilter && matchesSearch;
+        });
+
+        grid.innerHTML = productosFiltrados.map(p => {
+            const nombreTraducido = t(p.nombreKey);
+            const cantidad = p.descripcion.match(/\d+/)?.[0] || '12';
+            const descripcion = p.descripcion.includes('unidades') 
+                ? t('desc_artesanal', { cantidad })
+                : p.descripcion;
+            
+            return `
                 <div class="product-card rounded-xl shadow-sm overflow-hidden flex flex-col group">
                     <div class="relative aspect-square overflow-hidden bg-gray-100">
-                        <img alt="${p.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${p.imagen}"/>
-                        <span class="absolute top-3 left-3 bg-chile-blue text-white text-[10px] font-bold px-2 py-1 rounded border border-white">${p.etiqueta}</span>
+                        <img alt="${nombreTraducido}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                             src="${p.imagen}"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x400/f45925/white?text=${encodeURIComponent(nombreTraducido)}'"/>
+                        <span class="absolute top-3 left-3 bg-chile-blue text-white text-[10px] font-bold px-2 py-1 rounded border border-white">
+                            ${t(`etiqueta_${p.etiqueta.toLowerCase()}`) || p.etiqueta}
+                        </span>
                     </div>
                     <div class="p-5 flex flex-col flex-1">
                         <div class="mb-4">
-                            <h3 class="text-[#181311] font-bold text-lg mb-1">${p.nombre}</h3>
-                            <p class="text-[#6b4f43] text-xs">${p.descripcion}</p>
+                            <h3 class="text-[#181311] font-bold text-lg mb-1">${nombreTraducido}</h3>
+                            <p class="text-[#6b4f43] text-xs">${descripcion}</p>
                         </div>
                         <div class="flex justify-between items-end mb-6">
                             <div>
-                                <p class="text-[10px] text-chile-blue uppercase font-bold tracking-wider">Unidad</p>
+                                <p class="text-[10px] text-chile-blue uppercase font-bold tracking-wider">${t('unidad')}</p>
                                 <p class="text-xl font-extrabold text-[#181311]">$${p.precioUnidad.toFixed(2)}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-[10px] text-chile-red uppercase font-bold tracking-wider">Caja</p>
+                                <p class="text-[10px] text-chile-red uppercase font-bold tracking-wider">${t('caja')}</p>
                                 <p class="text-sm font-bold text-chile-blue">$${p.precioCaja.toFixed(2)}</p>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2 mt-auto">
                             <button onclick="agregarAlCarrito(${p.id}, 'unidad')" class="btn-unidad flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold transition-all">
-                                <span class="material-symbols-outlined text-sm">add</span> UNIDAD
+                                <span class="material-symbols-outlined text-sm">add</span> ${t('unidad_largo')}
                             </button>
-                            <button onclick="agregarAlCarrito(${p.id}, 'caja')" 
-                                    class="btn-caja flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">
-                                <span class="material-symbols-outlined text-sm">inventory_2</span> CAJA
+                            <button onclick="agregarAlCarrito(${p.id}, 'caja')" class="btn-caja flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">
+                                <span class="material-symbols-outlined text-sm">inventory_2</span> ${t('caja_largo')}
                             </button>
                         </div>
                     </div>
                 </div>
-            `).join('');
-        }
+            `;
+        }).join('');
+    }
 
-        function filterProducts(categoria) {
-            filtroActual = categoria;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                const btnFilter = btn.dataset.filter;
-                if (btnFilter === categoria) {
-                    btn.classList.add('filter-active');
-                    btn.classList.remove('bg-white', 'text-[#181311]', 'border', 'border-chile-blue');
-                } else {
-                    btn.classList.remove('filter-active');
-                    btn.classList.add('bg-white', 'text-[#181311]', 'border', 'border-chile-blue');
-                }
-            });
-            renderProductos();
-        }
-
-        document.getElementById('searchInput')?.addEventListener('input', (e) => {
-            busquedaActual = e.target.value;
-            renderProductos();
+    // 6. FUNCIONES DE FILTRO
+    function filterProducts(categoria) {
+        filtroActual = categoria;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            const btnFilter = btn.dataset.filter;
+            if (btnFilter === categoria) {
+                btn.classList.add('filter-active');
+                btn.classList.remove('bg-white', 'text-[#181311]', 'border', 'border-chile-blue');
+            } else {
+                btn.classList.remove('filter-active');
+                btn.classList.add('bg-white', 'text-[#181311]', 'border', 'border-chile-blue');
+            }
         });
+        renderProductos();
+    }
 
-        function agregarAlCarrito(id, tipo) {
-            const producto = productos.find(p => p.id === id);
-            if (!producto) return;
-            const precio = tipo === 'unidad' ? producto.precioUnidad : producto.precioCaja;
-            const item = { id: Date.now() + Math.random(), productoId: id, nombre: producto.nombre, tipo, precio, cantidad: 1 };
-            carrito.push(item);
-            actualizarCarrito();
-            toggleCart(true);
-        }
+    // 7. BÚSQUEDA
+    document.getElementById('searchInput')?.addEventListener('input', (e) => {
+        busquedaActual = e.target.value;
+        renderProductos();
+    });
 
-        function actualizarCarrito() {
-            const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-            const itemCount = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-            document.getElementById('cart-count').textContent = itemCount;
-            document.getElementById('cart-item-count').textContent = itemCount;
-            document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
-            document.getElementById('sidebar-total').textContent = `$${total.toFixed(2)}`;
+    // 8. FUNCIONES DEL CARRITO
+    function agregarAlCarrito(id, tipo) {
+        const producto = productos.find(p => p.id === id);
+        if (!producto) return;
+        const precio = tipo === 'unidad' ? producto.precioUnidad : producto.precioCaja;
+        const item = { 
+            id: Date.now() + Math.random(), 
+            productoId: id, 
+            nombre: t(producto.nombreKey), 
+            tipo, 
+            precio, 
+            cantidad: 1 
+        };
+        carrito.push(item);
+        actualizarCarrito();
+        toggleCart(true);
+    }
 
-            const cartItems = document.getElementById('cart-items');
-            cartItems.innerHTML = carrito.map(item => {
-                return `
-                    <div class="cart-item flex justify-between items-start border-b border-blue-100 pb-4">
-                        <div>
-                            <p class="font-bold text-gray-800">${item.nombre}</p>
-                            <p class="text-xs text-chile-blue">${item.tipo === 'unidad' ? 'Unidad' : 'Caja'}</p>
-                            <div class="flex items-center gap-2 mt-2">
-                                <button onclick="cambiarCantidad(${item.id}, -1)" class="text-chile-red hover:text-chile-blue"><span class="material-symbols-outlined text-sm">remove</span></button>
-                                <span class="text-sm font-bold">${item.cantidad}</span>
-                                <button onclick="cambiarCantidad(${item.id}, 1)" class="text-chile-blue hover:text-chile-red"><span class="material-symbols-outlined text-sm">add</span></button>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold text-chile-blue">$${(item.precio * item.cantidad).toFixed(2)}</p>
-                            <button onclick="eliminarDelCarrito(${item.id})" class="text-xs text-chile-red hover:underline">Eliminar</button>
+    function actualizarCarrito() {
+        const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+        const itemCount = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+        
+        document.getElementById('cart-count').textContent = itemCount;
+        document.getElementById('cart-item-count').textContent = itemCount;
+        document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+        document.getElementById('sidebar-total').textContent = `$${total.toFixed(2)}`;
+
+        const cartItems = document.getElementById('cart-items');
+        cartItems.innerHTML = carrito.map(item => {
+            return `
+                <div class="cart-item flex justify-between items-start border-b border-blue-100 pb-4">
+                    <div>
+                        <p class="font-bold text-gray-800">${item.nombre}</p>
+                        <p class="text-xs text-chile-blue">${item.tipo === 'unidad' ? t('unidad_largo') : t('caja_largo')}</p>
+                        <div class="flex items-center gap-2 mt-2">
+                            <button onclick="cambiarCantidad(${item.id}, -1)" class="text-chile-red hover:text-chile-blue">
+                                <span class="material-symbols-outlined text-sm">remove</span>
+                            </button>
+                            <span class="text-sm font-bold">${item.cantidad}</span>
+                            <button onclick="cambiarCantidad(${item.id}, 1)" class="text-chile-blue hover:text-chile-red">
+                                <span class="material-symbols-outlined text-sm">add</span>
+                            </button>
                         </div>
                     </div>
-                `;
-            }).join('') || '<p class="text-center text-chile-blue">Carrito vacío</p>';
-        }
+                    <div class="text-right">
+                        <p class="font-bold text-chile-blue">$${(item.precio * item.cantidad).toFixed(2)}</p>
+                        <button onclick="eliminarDelCarrito(${item.id})" class="text-xs text-chile-red hover:underline">
+                            ${t('eliminar')}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('') || `<p class="text-center text-chile-blue">${t('carrito_vacio')}</p>`;
+    }
 
-        function cambiarCantidad(id, delta) {
-            const item = carrito.find(i => i.id === id);
-            if (item) {
-                item.cantidad += delta;
-                if (item.cantidad <= 0) eliminarDelCarrito(id);
-                else actualizarCarrito();
-            }
+    function cambiarCantidad(id, delta) {
+        const item = carrito.find(i => i.id === id);
+        if (item) {
+            item.cantidad += delta;
+            if (item.cantidad <= 0) eliminarDelCarrito(id);
+            else actualizarCarrito();
         }
-        function eliminarDelCarrito(id) { carrito = carrito.filter(i => i.id !== id); actualizarCarrito(); }
-        function clearCart() { carrito = []; actualizarCarrito(); }
-        function toggleCart(show) {
-            const sidebar = document.getElementById('cart-sidebar');
-            if (show === true) sidebar.classList.remove('translate-x-full');
-            else if (show === false) sidebar.classList.add('translate-x-full');
-            else sidebar.classList.toggle('translate-x-full');
-        }
-        function checkout() {
-            if (carrito.length === 0) { alert('Carrito vacío'); return; }
-            alert('¡Gracias por tu compra! Te contactaremos pronto.');
-            clearCart(); toggleCart(false);
-        }
+    }
 
-        function generarPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFontSize(18); doc.text('Catálogo Latina INC - Montreal', 20, 20);
-            doc.setFontSize(12); doc.text('Productos disponibles:', 20, 30);
-            let y = 40;
-            productos.forEach((p, index) => {
-                if (y > 270) { doc.addPage(); y = 20; }
-                doc.setFontSize(9); doc.text(`${index+1}. ${p.nombre} - $${p.precioUnidad} uni / $${p.precioCaja} caja`, 20, y);
-                y += 6;
+    function eliminarDelCarrito(id) { 
+        carrito = carrito.filter(i => i.id !== id); 
+        actualizarCarrito(); 
+    }
+
+    function clearCart() { 
+        carrito = []; 
+        actualizarCarrito(); 
+    }
+
+    function toggleCart(show) {
+        const sidebar = document.getElementById('cart-sidebar');
+        if (show === true) sidebar.classList.remove('translate-x-full');
+        else if (show === false) sidebar.classList.add('translate-x-full');
+        else sidebar.classList.toggle('translate-x-full');
+    }
+
+    function checkout() {
+        if (carrito.length === 0) { 
+            alert(t('carrito_vacio')); 
+            return; 
+        }
+        alert(t('proceder_pago'));
+        clearCart(); 
+        toggleCart(false);
+    }
+
+    // 9. GENERAR PDF
+    function generarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFontSize(18); 
+        doc.text('Catálogo Latina INC - Montreal', 20, 20);
+        doc.setFontSize(12); 
+        doc.text(t('productos_disponibles') || 'Productos disponibles:', 20, 30);
+        
+        let y = 40;
+        productos.forEach((p, index) => {
+            if (y > 270) { doc.addPage(); y = 20; }
+            doc.setFontSize(9); 
+            doc.text(`${index+1}. ${t(p.nombreKey)} - $${p.precioUnidad} ${t('unidad')} / $${p.precioCaja} ${t('caja')}`, 20, y);
+            y += 6;
+        });
+        
+        if (carrito.length) {
+            doc.addPage(); 
+            doc.setFontSize(16); 
+            doc.text(t('resumen'), 20, 20);
+            y = 30; 
+            let total = 0;
+            
+            carrito.forEach((item, i) => {
+                doc.text(`${i+1}. ${item.nombre} (${item.tipo === 'unidad' ? t('unidad_largo') : t('caja_largo')}) x${item.cantidad} = $${(item.precio*item.cantidad).toFixed(2)}`, 20, y);
+                total += item.precio*item.cantidad; 
+                y += 7;
             });
-            if (carrito.length) {
-                doc.addPage(); doc.setFontSize(16); doc.text('Cotización actual', 20, 20);
-                y = 30; let total = 0;
-                carrito.forEach((item, i) => {
-                    doc.text(`${i+1}. ${item.nombre} (${item.tipo}) x${item.cantidad} = $${(item.precio*item.cantidad).toFixed(2)}`, 20, y);
-                    total += item.precio*item.cantidad; y += 7;
-                });
-                doc.text(`Total: $${total.toFixed(2)} CAD`, 20, y+10);
-            }
-            doc.save('catalogo-latina-inc.pdf');
+            
+            doc.text(`${t('total')}: $${total.toFixed(2)} CAD`, 20, y+10);
         }
+        
+        doc.save('catalogo-latina-inc.pdf');
+    }
 
-        renderProductos(); actualizarCarrito();
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleCart(false); });
-    </script>
+    // 10. INICIALIZACIÓN
+    document.addEventListener('DOMContentLoaded', function() {
+        renderProductos();
+        actualizarCarrito();
+        cambiarIdioma('es');
+    });
+
+    // 11. CERRAR CARRITO CON ESC
+    document.addEventListener('keydown', (e) => { 
+        if (e.key === 'Escape') toggleCart(false); 
+    });
+</script>
 </body>
 </html>
