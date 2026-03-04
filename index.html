@@ -163,6 +163,10 @@
         <span class="material-symbols-outlined text-lg">download</span>
         <span>Descargar Catálogo PDF</span>
     </button>
+   <button class="flex items-center gap-2 bg-[#181311] text-white px-6 py-3 rounded-lg font-bold text-sm hover:bg-primary transition-colors shadow-lg shadow-black/5" onclick="imprimirCatalogo(productos)">
+        <span class="material-symbols-outlined text-lg">print</span>
+        <span>Imprimir Catálogo</span>
+    </button>
 </div>
 
 <!-- Filter Bar - con IDs y data-atributos -->
@@ -178,7 +182,7 @@
 
 
         <!-- Product Grid -->
-        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        <div id="product-grid" class="catalogo grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
     </main>
 
     <!-- Persistent Cotización Footer con colores chilenos -->
@@ -586,6 +590,7 @@
         { id: 33, nombreKey: "prod_papayas", nombre: "Papayas al Jugo", descripcion: "Papayas al jugo 1 Lt, 12 unidades por caja", precioUnidad: 15.00, precioCaja: 180.00, categoria: "Bebidas", etiqueta: "PREMIUM", imagen: "./assets/img/papayas.png" }
     ];
 
+    window.productos = productos; // Exponer productos para depuración
     // 4. VARIABLES DE ESTADO
     let carrito = [];
     let filtroActual = 'all';
@@ -611,7 +616,7 @@
                 : p.descripcion;
             
             return `
-                <div class="product-card rounded-xl shadow-sm overflow-hidden flex flex-col group">
+                <div class="producto product-card rounded-xl shadow-sm overflow-hidden flex flex-col group">
                     <div class="relative aspect-square overflow-hidden bg-gray-100">
                         <img alt="${nombreTraducido}" 
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
@@ -811,6 +816,116 @@
     document.addEventListener('keydown', (e) => { 
         if (e.key === 'Escape') toggleCart(false); 
     });
+
+function imprimirCatalogo(productosFiltrados) {
+    if (!productosFiltrados || productosFiltrados.length === 0) {
+        alert("No hay productos para imprimir");
+        return;
+    }
+
+    const nuevaVentana = window.open('', '_blank');
+    let html = `
+    <html>
+    <head>
+        <title>Catálogo Latina INC</title>
+        <style>
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                font-size: 12px;
+            }
+            .pagina {
+                page-break-after: always;
+                width: 100%;
+                height: 100%;
+                padding: 15mm;
+                box-sizing: border-box;
+            }
+            .encabezado {
+                text-align: center;
+                margin-bottom: 20px;
+                font-size: 16px;
+                font-weight: bold;
+            }
+            .contacto {
+                text-align: center;
+                font-size: 11px;
+                margin-bottom: 20px;
+            }
+            .productos {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                height: calc(100% - 80px); /* dejar espacio para encabezado */
+            }
+            .producto {
+                width: 48%;
+                height: 48%; /* 1/4 de la hoja menos margen */
+                text-align: center;
+                margin-bottom: 10px;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            .producto img {
+                max-width: 100%;
+                max-height: 60%;
+                object-fit: contain;
+                border: 1px solid #ddd;
+                background: #fff;
+            }
+            .producto-info {
+                margin-top: 5px;
+            }
+            .producto-info div {
+                margin: 2px 0;
+            }
+        </style>
+    </head>
+    <body>
+    `;
+
+    const productosPorPagina = 4; // 2x2 por hoja
+    for (let i = 0; i < productosFiltrados.length; i += productosPorPagina) {
+        html += `<div class="pagina">`;
+        html += `<div class="encabezado">Latina INC - Productos Chilenos de Calidad</div>`;
+        html += `<div class="contacto">Dirección: Montreal, Canada | Email: latina.ramirez@videotron.ca | Tel: +1 (514) 655-7808</div>`;
+        html += `<div class="productos">`;
+
+        const paginaProductos = productosFiltrados.slice(i, i + productosPorPagina);
+        paginaProductos.forEach(prod => {
+            html += `
+                <div class="producto">
+                    <img src="${prod.imagen}" alt="${prod.nombre}">
+                    <div class="producto-info">
+                        <div><strong>${prod.nombre}</strong></div>
+                        <div>Unidad: $${prod.precioUnidad.toFixed(2)}</div>
+                        <div>Caja: $${prod.precioCaja.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `</div></div>`; // productos + pagina
+    }
+
+    html += `</body></html>`;
+
+    nuevaVentana.document.open();
+    nuevaVentana.document.write(html);
+    nuevaVentana.document.close();
+    nuevaVentana.focus();
+    nuevaVentana.print();
+}
 </script>
+<div id="print-container"></div>
 </body>
 </html>

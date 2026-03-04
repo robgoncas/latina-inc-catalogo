@@ -1,3 +1,55 @@
 .fix-width{
     width: stretch !important;
 }
+
+/* Estilos para impresión */
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  .hoja {
+    page-break-after: always;
+    width: 210mm;
+    height: 297mm;
+    padding: 15mm;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .producto {
+    width: 48%; /* 2 por fila */
+    height: 48%;
+    margin-bottom: 4%;
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+  .producto img {
+    width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+  }
+  .info-producto {
+    margin-top: 5px;
+    font-size: 12px;
+  }
+  .empresa {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #1a1a1a;
+  }
+  .contacto {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 12px;
+    color: #333;
+  }
+}
