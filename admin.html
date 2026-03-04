@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Latina INC · Productos Chilenos · Montreal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafafa; }
+        /* Bandera de Chile como fondo sutil (inspiración) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(170deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.92) 40%,
+                        rgba(0,57,166,0.03) 40%, rgba(0,57,166,0.06) 60%,
+                        rgba(213,43,30,0.03) 60%, rgba(213,43,30,0.06) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .product-card { transition: all 0.25s ease; border: 1px solid rgba(0,57,166,0.15); background: white; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 16px 28px -8px rgba(0,57,166,0.15), 0 6px 12px -4px rgba(213,43,30,0.1); border-color: #0039a6; }
+        /* filtros activos con esquema bandera */
+        .filter-btn {
+            transition: all 0.2s;
+            border-width: 1px;
+            font-weight: 600;
+        }
+        .filter-active {
+            background-color: #0039a6 !important;      /* azul */
+            color: white !important;
+            border-color: #0039a6 !important;
+            box-shadow: 0 4px 10px -2px rgba(0,57,166,0.3);
+        }
+        /* botón caja ahora rojo/azul sin bordes naranjas */
+        .btn-caja {
+            background-color: #0039a6; /* azul chileno */
+            color: white;
+            border: 2px solid #d52b1e; /* rojo */
+            transition: all 0.2s;
+        }
+        .btn-caja:hover {
+            background-color: #d52b1e;
+            border-color: #0039a6;
+            box-shadow: 0 6px 14px rgba(213,43,30,0.25);
+        }
+        /* botón unidad con bordes chilenos tenues */
+        .btn-unidad {
+            background-color: white;
+            color: #0039a6;
+            border: 1.5px solid #d52b1e;
+        }
+        .btn-unidad:hover {
+            background-color: #d52b1e;
+            color: white;
+            border-color: #0039a6;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .cart-item { animation: slideIn 0.3s ease; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        /* footer y header con acentos bandera */
+        .chile-stripe {
+            border-top: 6px solid #0039a6;
+            border-bottom: 6px solid #d52b1e;
+        }
+        .bg-chile-blue { background-color: #0039a6; }
+        .bg-chile-red { background-color: #d52b1e; }
+        .text-chile-blue { color: #0039a6; }
+        .text-chile-red { color: #d52b1e; }
+        
+        /* Modal de imagen */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: pointer;
+        }
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        .image-modal.active {
+            display: flex;
+        }
+        
+        /* Tooltip para hover de imágenes */
+        .image-hover-tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .image-hover-tooltip:hover::after {
+            content: '🔍 Click para ampliar';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,57,166,0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            margin-bottom: 5px;
+            z-index: 10;
+            border: 1px solid #d52b1e;
+        }
+    </style>
+</head>
+<body>
+<!-- ============================================= -->
+<!-- MODAL PARA VER IMÁGENES -->
+<!-- ============================================= -->
+<div id="imageModal" class="image-modal" onclick="cerrarModalImagen()">
+    <img id="modalImage" src="" alt="Vista previa">
+</div>
+
+<!-- ============================================= -->
+<!-- EDITOR DE PRODUCTOS PARA ADMIN -->
+<!-- ============================================= -->
+<div id="adminPanel" class="fixed inset-0 bg-gray-900/95 z-50 overflow-y-auto hidden transition-all duration-300">
+    <div class="min-h-screen px-4 py-8">
+        <div class="max-w-[1600px] mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border-t-8 border-chile-blue border-b-8 border-chile-red">
+            
+            <!-- HEADER DEL EDITOR -->
+            <div class="bg-gradient-to-r from-[#0039a6] to-[#d52b1e] p-6 text-white flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <span class="material-symbols-outlined text-4xl">inventory</span>
+                    <div>
+                        <h2 class="text-3xl font-black">EDITOR DE PRODUCTOS</h2>
+                        <p class="text-white/80">Administra tu catálogo • Los cambios se guardan localmente</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="cambiarVistaEditor()" id="toggleViewBtn" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl flex items-center gap-2 transition-all">
+                        <span class="material-symbols-outlined">grid_view</span>
+                        <span id="viewModeText">Vista Tabla</span>
+                    </button>
+                    <button onclick="cerrarEditor()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl flex items-center gap-2 transition-all">
+                        <span class="material-symbols-outlined">close</span>
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+
+            <!-- BARRA DE HERRAMIENTAS -->
+            <div class="bg-gray-50 p-4 border-b border-gray-200 flex flex-wrap gap-3 items-center">
+                <button onclick="importarJSON()" class="bg-[#0039a6] hover:bg-[#002b7a] text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all font-semibold shadow-md">
+                    <span class="material-symbols-outlined">upload_file</span>
+                    Importar JSON
+                </button>
+                
+                <!-- SELECTOR DE RUTA PARA EXPORTAR -->
+                <div class="flex items-center gap-2 bg-white rounded-xl border border-gray-300 px-3 py-1 shadow-sm">
+                    <span class="material-symbols-outlined text-gray-500">folder</span>
+                    <input type="text" id="exportPath" value="./" placeholder="Ruta de descarga..." class="w-48 p-1 border-0 focus:ring-0 text-sm">
+                    <button onclick="exportarJSON()" class="bg-[#d52b1e] hover:bg-[#a52118] text-white px-4 py-1.5 rounded-lg flex items-center gap-1 transition-all font-semibold text-sm">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Exportar
+                    </button>
+                </div>
+                
+                <button onclick="agregarProducto()" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all font-semibold shadow-md">
+                    <span class="material-symbols-outlined">add_box</span>
+                    Nuevo Producto
+                </button>
+                <button onclick="actualizarRutasImagen()" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all font-semibold shadow-md">
+                    <span class="material-symbols-outlined">image</span>
+                    Actualizar Imágenes
+                </button>
+                <button onclick="eliminarSeleccionados()" class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all font-semibold shadow-md">
+                    <span class="material-symbols-outlined">delete</span>
+                    Eliminar Seleccionados
+                </button>
+                <input type="file" id="fileInput" accept=".json" class="hidden">
+            </div>
+
+            <!-- ESTADÍSTICAS RÁPIDAS -->
+            <div class="grid grid-cols-4 gap-4 p-4 bg-white border-b border-gray-200">
+                <div class="bg-gradient-to-br from-blue-50 to-white p-4 rounded-xl border border-blue-200">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-[#0039a6] w-10 h-10 rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white">inventory</span>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Total Productos</p>
+                            <p class="text-2xl font-black text-[#0039a6]" id="statsTotal">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-red-50 to-white p-4 rounded-xl border border-red-200">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-[#d52b1e] w-10 h-10 rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white">category</span>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Categorías</p>
+                            <p class="text-2xl font-black text-[#d52b1e]" id="statsCategorias">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-yellow-50 to-white p-4 rounded-xl border border-yellow-200">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-yellow-500 w-10 h-10 rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white">sell</span>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Etiquetas</p>
+                            <p class="text-2xl font-black text-yellow-600" id="statsEtiquetas">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-white p-4 rounded-xl border border-green-200">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-green-500 w-10 h-10 rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white">payments</span>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Valor Total Cajas</p>
+                            <p class="text-2xl font-black text-green-600" id="statsValorTotal">$0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENEDOR DE VISTAS -->
+            <div id="editorContainer" class="p-4 bg-gray-50">
+                <!-- VISTA TABLA -->
+                <div id="tableView" class="w-full">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gradient-to-r from-[#0039a6] to-[#d52b1e] text-white sticky top-0 z-10">
+                                    <tr>
+                                        <th class="p-3 text-left w-10"><input type="checkbox" id="selectAll" onclick="toggleAll()" class="rounded border-white/30"></th>
+                                        <th class="p-3 text-left">ID</th>
+                                        <th class="p-3 text-left">nombreKey</th>
+                                        <th class="p-3 text-left">Nombre</th>
+                                        <th class="p-3 text-left">Descripción</th>
+                                        <th class="p-3 text-left">P/U</th>
+                                        <th class="p-3 text-left">P/Caja</th>
+                                        <th class="p-3 text-left">Categoría</th>
+                                        <th class="p-3 text-left">Etiqueta</th>
+                                        <th class="p-3 text-left">Imagen</th>
+                                        <th class="p-3 text-left">Vista Previa</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody" class="divide-y divide-gray-200"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA TARJETAS -->
+                <div id="cardView" class="w-full hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="cardContainer"></div>
+                </div>
+            </div>
+
+            <!-- FOOTER DEL EDITOR -->
+            <div class="bg-gray-900 text-white p-4 text-sm flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[#d52b1e]">info</span>
+                    <span>Las imágenes deben estar en <code class="bg-gray-800 px-2 py-1 rounded">./assets/img/</code></span>
+                </div>
+                <div class="flex gap-4">
+                    <span class="text-gray-400">💾 Autoguardado activado</span>
+                    <span class="text-gray-400">🔄 Versión 2.0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BOTÓN FLOTANTE PARA ABRIR EL EDITOR -->
+<button onclick="abrirEditor()" class="fixed bottom-6 right-6 bg-gradient-to-r from-[#0039a6] to-[#d52b1e] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all z-40 group">
+    <span class="material-symbols-outlined text-3xl group-hover:rotate-90 transition-transform">admin_panel_settings</span>
+</button>
+
+<script>
+    // =============================================
+    // FUNCIONES PARA EL MODAL DE IMÁGENES
+    // =============================================
+    function abrirModalImagen(src) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        modalImg.src = src;
+        modal.classList.add('active');
+    }
+    
+    function cerrarModalImagen() {
+        const modal = document.getElementById('imageModal');
+        modal.classList.remove('active');
+    }
+    
+    // Cerrar modal con tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            cerrarModalImagen();
+        }
+    });
+
+    // =============================================
+    // EDITOR DE PRODUCTOS
+    // =============================================
+    
+    // Productos iniciales
+    let productosEditor = [
+        { id: 1, nombreKey: "prod_mermelada_mora", nombre: "Mermelada de Mora", descripcion: "Mermelada artesanal, 12 unidades por caja", precioUnidad: 4.50, precioCaja: 54.00, categoria: "Mermeladas", etiqueta: "ARTESANAL", imagen: "./assets/img/mermelada_mora.png" },
+        { id: 2, nombreKey: "prod_mermelada_alcayota", nombre: "Mermelada de Alcayota", descripcion: "Tradicional alcayota, 24 unidades por caja", precioUnidad: 4.50, precioCaja: 108.00, categoria: "Mermeladas", etiqueta: "TRADICIÓN", imagen: "./assets/img/mermelada_alcayota.png" },
+        { id: 3, nombreKey: "prod_galletas_chilenas", nombre: "Galletas Chilenas", descripcion: "Galletas surtidas, 24 paquetes por caja", precioUnidad: 3.25, precioCaja: 78.00, categoria: "Galletas", etiqueta: "CLÁSICO", imagen: "./assets/img/galletas_chilenas.png" },
+        { id: 4, nombreKey: "prod_chocolate_amargo", nombre: "Chocolate Amargo", descripcion: "Chocolate 70% cacao, 12 barras por caja", precioUnidad: 5.75, precioCaja: 69.00, categoria: "Chocolates", etiqueta: "PREMIUM", imagen: "./assets/img/chocolate_amargo.png" }
+    ];
+
+    const categorias = ["Mermeladas", "Galletas", "Chocolates", "Salsas", "Despensa", "Bebidas"];
+    const etiquetas = ["ARTESANAL", "TRADICIÓN", "EXÓTICO", "PREMIUM", "POPULAR", "CLÁSICO", "ECONÓMICO", "ESPECIAL", "INFANTIL", "PICANTE", "TÍPICO", "REFRESCANTE", "SOPAS"];
+
+    let vistaActual = 'tabla';
+
+    // Función para abrir el editor
+    function abrirEditor() {
+        document.getElementById('adminPanel').classList.remove('hidden');
+        renderizarEditor();
+        actualizarStatsEditor();
+    }
+
+    function cerrarEditor() {
+        document.getElementById('adminPanel').classList.add('hidden');
+    }
+
+    function cambiarVistaEditor() {
+        const tableView = document.getElementById('tableView');
+        const cardView = document.getElementById('cardView');
+        const viewModeText = document.getElementById('viewModeText');
+        
+        if (vistaActual === 'tabla') {
+            tableView.classList.add('hidden');
+            cardView.classList.remove('hidden');
+            vistaActual = 'tarjetas';
+            viewModeText.textContent = 'Vista Tabla';
+            renderizarTarjetas();
+        } else {
+            tableView.classList.remove('hidden');
+            cardView.classList.add('hidden');
+            vistaActual = 'tabla';
+            viewModeText.textContent = 'Vista Tarjetas';
+            renderizarTabla();
+        }
+    }
+
+    // Renderizar tabla con hover para imágenes
+    function renderizarTabla() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        
+        productosEditor.sort((a, b) => a.id - b.id);
+        
+        productosEditor.forEach(prod => {
+            const row = tbody.insertRow();
+            row.className = 'hover:bg-gray-50';
+            row.innerHTML = `
+                <td class="p-3"><input type="checkbox" class="product-checkbox rounded border-gray-300" data-id="${prod.id}"></td>
+                <td class="p-3 font-mono">${prod.id}</td>
+                <td class="p-3"><input type="text" value="${prod.nombreKey}" onchange="actualizarCampo(${prod.id}, 'nombreKey', this.value)" class="w-32 p-1 border rounded"></td>
+                <td class="p-3"><input type="text" value="${prod.nombre.replace(/"/g, '&quot;')}" onchange="actualizarCampo(${prod.id}, 'nombre', this.value)" class="w-40 p-1 border rounded"></td>
+                <td class="p-3"><textarea rows="2" onchange="actualizarCampo(${prod.id}, 'descripcion', this.value)" class="w-48 p-1 border rounded text-xs">${prod.descripcion}</textarea></td>
+                <td class="p-3"><input type="number" step="0.01" value="${prod.precioUnidad}" onchange="actualizarCampo(${prod.id}, 'precioUnidad', this.value)" class="w-20 p-1 border rounded"></td>
+                <td class="p-3"><input type="number" step="0.01" value="${prod.precioCaja}" onchange="actualizarCampo(${prod.id}, 'precioCaja', this.value)" class="w-20 p-1 border rounded"></td>
+                <td class="p-3">
+                    <select onchange="actualizarCampo(${prod.id}, 'categoria', this.value)" class="p-1 border rounded">
+                        ${categorias.map(cat => `<option value="${cat}" ${prod.categoria === cat ? 'selected' : ''}>${cat}</option>`).join('')}
+                    </select>
+                </td>
+                <td class="p-3">
+                    <select onchange="actualizarCampo(${prod.id}, 'etiqueta', this.value)" class="p-1 border rounded">
+                        ${etiquetas.map(et => `<option value="${et}" ${prod.etiqueta === et ? 'selected' : ''}>${et}</option>`).join('')}
+                    </select>
+                </td>
+                <td class="p-3"><input type="text" value="${prod.imagen}" onchange="actualizarCampo(${prod.id}, 'imagen', this.value)" class="w-40 p-1 border rounded text-xs" placeholder="./assets/img/..."></td>
+                <td class="p-3">
+                    <div class="image-hover-tooltip">
+                        <img src="${prod.imagen}" class="w-12 h-12 object-cover rounded cursor-pointer" onclick="abrirModalImagen('${prod.imagen}')" onerror="this.src='https://via.placeholder.com/48?text=No+Image'">
+                    </div>
+                </td>
+            `;
+        });
+    }
+
+    // Renderizar tarjetas con hover para imágenes
+    function renderizarTarjetas() {
+        const container = document.getElementById('cardContainer');
+        container.innerHTML = '';
+        
+        productosEditor.sort((a, b) => a.id - b.id);
+        
+        productosEditor.forEach(prod => {
+            const card = document.createElement('div');
+            card.className = 'product-card rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all';
+            card.innerHTML = `
+                <div class="relative">
+                    <div class="image-hover-tooltip">
+                        <img src="${prod.imagen}" class="w-full h-40 object-cover cursor-pointer" onclick="abrirModalImagen('${prod.imagen}')" onerror="this.src='https://via.placeholder.com/300x200?text=Producto'">
+                    </div>
+                    <div class="absolute top-2 right-2">
+                        <input type="checkbox" class="product-checkbox rounded border-gray-300" data-id="${prod.id}">
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">${prod.nombre}</h3>
+                        <span class="text-xs bg-gray-100 px-2 py-1 rounded">ID: ${prod.id}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">${prod.descripcion}</p>
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <div class="bg-blue-50 p-2 rounded">
+                            <span class="text-xs text-gray-500">P/U</span>
+                            <p class="font-bold text-[#0039a6]">$${prod.precioUnidad}</p>
+                        </div>
+                        <div class="bg-red-50 p-2 rounded">
+                            <span class="text-xs text-gray-500">P/Caja</span>
+                            <p class="font-bold text-[#d52b1e]">$${prod.precioCaja}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mb-3">
+                        <span class="text-xs bg-[#0039a6] text-white px-2 py-1 rounded">${prod.categoria}</span>
+                        <span class="text-xs bg-[#d52b1e] text-white px-2 py-1 rounded">${prod.etiqueta}</span>
+                    </div>
+                    <div class="text-xs text-gray-500 truncate">
+                        <span class="material-symbols-outlined text-base align-middle">image</span>
+                        ${prod.imagen}
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // Actualizar campo
+    function actualizarCampo(id, campo, valor) {
+        const producto = productosEditor.find(p => p.id === id);
+        if (producto) {
+            if (campo === 'precioUnidad' || campo === 'precioCaja') {
+                valor = parseFloat(valor) || 0;
+            }
+            producto[campo] = valor;
+            actualizarStatsEditor();
+            
+            if (vistaActual === 'tarjetas') {
+                renderizarTarjetas();
+            }
+        }
+    }
+
+    // Agregar producto
+    function agregarProducto() {
+        const maxId = Math.max(...productosEditor.map(p => p.id), 0);
+        const nuevoProducto = {
+            id: maxId + 1,
+            nombreKey: "prod_nuevo",
+            nombre: "Nuevo Producto",
+            descripcion: "Descripción del producto",
+            precioUnidad: 0,
+            precioCaja: 0,
+            categoria: "Mermeladas",
+            etiqueta: "ARTESANAL",
+            imagen: "./assets/img/producto_default.png"
+        };
+        productosEditor.push(nuevoProducto);
+        renderizarEditor();
+    }
+
+    // Importar JSON
+    function importarJSON() {
+        document.getElementById('fileInput').click();
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    productosEditor = JSON.parse(e.target.result);
+                    renderizarEditor();
+                    alert('✅ Productos importados correctamente');
+                } catch (error) {
+                    alert('❌ Error al leer el archivo JSON: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    // Exportar JSON con la ruta especificada
+    function exportarJSON() {
+        const exportPath = document.getElementById('exportPath').value || './';
+        const jsonString = JSON.stringify(productosEditor, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        // Asegurar que la ruta termine con /
+        const path = exportPath.endsWith('/') ? exportPath : exportPath + '/';
+        a.href = url;
+        a.download = path + 'productos_actualizados.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Actualizar rutas de imagen
+    function actualizarRutasImagen() {
+        let contador = 0;
+        productosEditor.forEach(prod => {
+            if (!prod.imagen || prod.imagen === './assets/img/producto_default.png' || prod.imagen.includes('https://')) {
+                const nombreKey = prod.nombreKey.replace('prod_', '');
+                prod.imagen = `./assets/img/${nombreKey}.png`;
+                contador++;
+            }
+        });
+        renderizarEditor();
+        alert(`🖼️ Rutas actualizadas para ${contador} productos`);
+    }
+
+    // Seleccionar todos
+    function toggleAll() {
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.product-checkbox');
+        checkboxes.forEach(cb => cb.checked = selectAll.checked);
+    }
+
+    // Eliminar seleccionados
+    function eliminarSeleccionados() {
+        const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+        if (checkboxes.length === 0) {
+            alert('Selecciona al menos un producto');
+            return;
+        }
+        
+        if (confirm(`¿Eliminar ${checkboxes.length} producto(s)?`)) {
+            const idsAEliminar = Array.from(checkboxes).map(cb => parseInt(cb.dataset.id));
+            productosEditor = productosEditor.filter(p => !idsAEliminar.includes(p.id));
+            renderizarEditor();
+        }
+    }
+
+    // Actualizar estadísticas
+    function actualizarStatsEditor() {
+        document.getElementById('statsTotal').textContent = productosEditor.length;
+        
+        const categoriasUnicas = new Set(productosEditor.map(p => p.categoria));
+        document.getElementById('statsCategorias').textContent = categoriasUnicas.size;
+        
+        const etiquetasUnicas = new Set(productosEditor.map(p => p.etiqueta));
+        document.getElementById('statsEtiquetas').textContent = etiquetasUnicas.size;
+        
+        const valorTotal = productosEditor.reduce((sum, p) => sum + (p.precioCaja || 0), 0);
+        document.getElementById('statsValorTotal').textContent = '$' + valorTotal.toFixed(2);
+    }
+
+    // Renderizar según vista actual
+    function renderizarEditor() {
+        if (vistaActual === 'tabla') {
+            renderizarTabla();
+        } else {
+            renderizarTarjetas();
+        }
+        actualizarStatsEditor();
+    }
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', function() {
+        renderizarEditor();
+    });
+</script>
+</body>
+</html>
